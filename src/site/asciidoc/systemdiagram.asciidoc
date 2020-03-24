@@ -1,0 +1,61 @@
+== Systemdiagram
+:imagesdir: images
+Applikasjonsdiagrammet viser hvilke andre systemer systemet snakker med.
+
+image::pensjon-dokdist.png[pensjon-dokdist,png]
+
+
+|===
+|Steg |Input |Output |Beskrivelse
+
+|1
+
+PSAK -> Pensjon-dokdist
+|journalpostId
+
+journalpostStatus
+|
+|Url i PSAK inneholder journalpostId og journalpostStatus.
+Lenken leder til pensjon-dokdist.
+
+|2
+
+Pensjon-dokdist -> SAF
+|journalpostId
+|journalfoerendEnhet
+|Kall mot GraphiQL-tjeneste SAF og hente journalfoerendEnhet som trenges for å ferdigstille journalpost.
+
+|3
+
+Pensjon-dokdist -> STS
+|
+|serviceBrukerToken
+|Kall mot Rest-tjeneste STS og hente serviceBrukerToken som trenges for å ferdigstille journalpost.
+
+|4
+
+Pensjon-dokdist -> Dokarkiv
+|journalpostId
+
+journalfoerendEnhet
+|
+|Kall mot Rest-tjeneste Dokarkiv og ferdigstille journalpost. Status til journalpost blir satt til 'FS'.
+
+|5
+
+Pensjon-dokdist -> DistribuerJournalpost
+|journalpostId
+
+batchId (nullable)
+
+bestillendeFagsystem
+
+dokumentProdApp
+
+adresse (nullable)
+|bestillingsId
+|Kall mot Rest-tjeneste DistribuerJournalpost. Det blir sendte tilbake en bestillingsId hvis brev er distribuert.
+Forusetningen er at journalpost har status 'FS'
+
+|6
+|===

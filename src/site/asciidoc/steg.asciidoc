@@ -1,0 +1,24 @@
+== Steg
+
+|===
+|Steg |Beskrivelse
+
+|1
+|Saksbehandler oppretter og redigerer brev på vanlig måte i gammel brevløsning med bruk av Brevklienten
+
+|2
+|Saksbehandler velger Ferdigstill i brevklienten
+
+T_JOURNALPOST.K_JOURNAL_S = 'FL'
+
+
+|3
+|Saksbehandler åpner pensjon-dokdist via link i Psak
+
+|4
+|Saksbehandler trykker på Send brevet
+
+|5
+|Brevet er distribuert
+T_JOURNALPOST.K_JOURNAL_S = 'FS'
+|===
