@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.5.RELEASE</version>
+		<version>2.6.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.nav</groupId>
@@ -16,12 +16,13 @@
 
 	<properties>
 		<java.version>8</java.version>
-		<junit.version>4.13</junit.version>
-		<httpclient.version>4.5.12</httpclient.version>
-		<assertj.version>3.15.0</assertj.version>
+		<junit.version>4.13.2</junit.version>
+		<httpclient.version>4.5.13</httpclient.version>
+		<assertj.version>3.21.0</assertj.version>
+		<log4j2.version>2.15.0</log4j2.version>
 		<springfox.version>2.9.2</springfox.version>
-		<spring-security-oauth2.version>2.5.0.RELEASE</spring-security-oauth2.version>
-		<jose4j.version>0.7.1</jose4j.version>
+		<spring-security-oauth2.version>2.5.1.RELEASE</spring-security-oauth2.version>
+		<jose4j.version>0.7.9</jose4j.version>
 		<logstash-logback-encoder.version>6.3</logstash-logback-encoder.version>
 	</properties>
 
