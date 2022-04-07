@@ -36,7 +36,7 @@ spec:
     - name: "OIDC_CLIENT_ID"
       value: "pensjon-dokdist-q2"
     - name: "DISTRIBUER_JOURNALPOST_URL"
-      value: "https://dokdistfordeling-q2.dev-fss.nais.io/rest/v1/distribuerjournalpost"
+      value: "https://dokdistfordeling-q2.dev.intern.nav.no/rest/v1/distribuerjournalpost"
     - name: "DOKARKIV_BASE_URL"
       value: "https://dokarkiv-q2.nais.preprod.local"
     - name: "SAF_GRAPHQL"
