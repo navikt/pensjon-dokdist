@@ -46,3 +46,5 @@ spec:
       value: "https://security-token-service.nais.adeo.no/rest/v1/sts/token?grant_type=client_credentials&scope=openid"
     - name: "OIDC_ISSUER_HOST"
       value: "https://isso.adeo.no/isso/oauth2"
+    - name: "BREVMETADATA_URL"
+      value: "https://pensjon-brevmetadata.intern.nav.no"
