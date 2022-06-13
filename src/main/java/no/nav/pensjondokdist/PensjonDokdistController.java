@@ -1,5 +1,10 @@
 package no.nav.pensjondokdist;
 
+import no.nav.pensjondokdist.brevmetadata.BrevMetadataService;
+import no.nav.pensjondokdist.brevmetadata.Brevdata;
+import no.nav.pensjondokdist.brevmetadata.DokumentkategoriCode;
+import no.nav.pensjondokdist.saf.SafService;
+import no.nav.pensjondokdist.saf.model.Journalpost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,17 +27,29 @@ public class PensjonDokdistController {
 
     private DistribuerJournalpostService distribuerJournalpostService;
     private JournalforingService journalforingService;
+    private final SafService safService;
+    private final BrevMetadataService brevMetadataService;
 
     public PensjonDokdistController(DistribuerJournalpostService distribuerJournalpostService,
-            JournalforingService journalforingService) {
+                                    JournalforingService journalforingService,
+                                    SafService safService,
+                                    BrevMetadataService brevMetadataService) {
         this.distribuerJournalpostService = distribuerJournalpostService;
         this.journalforingService = journalforingService;
+        this.safService = safService;
+        this.brevMetadataService = brevMetadataService;
     }
 
     @RequestMapping(value = "/api/journalpost/{id}/send", method = RequestMethod.POST)
     public ResponseEntity sendJournalbrev(@PathVariable("id") String journalpostId, @RequestBody PensjondokdistRequest request) {
-        if (changeStatusJournalbrev(journalpostId, request.getStatus())) {
-            DistribuerJournalpostResponse response = distribuerJournalpostService.distribuerJournalpost(journalpostId, request);
+        Journalpost journalpost = safService.hentJournalPost(journalpostId);
+        DokumentkategoriCode dokumentKategori = brevMetadataService.fetchBrevdata(journalpost.getBrevkode()).getDokumentkategori();
+
+        if (changeStatusJournalbrev(journalpostId, request.getStatus(), journalpost.getJournalforendeEnhet())) {
+
+            DistribuerJournalpostResponse response = distribuerJournalpostService.distribuerJournalpost(
+                    journalpostId, request, dokumentKategori);
+
             if (!response.getBestillingsId().isEmpty()) {
                 logger.info("Journalpost: " + journalpostId + " bestillingsId: " + response.getBestillingsId());
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -42,9 +59,10 @@ public class PensjonDokdistController {
     }
 
 
-    private Boolean changeStatusJournalbrev(String journalpostId, String journalpostStatus) {
+    private Boolean changeStatusJournalbrev(String journalpostId, String journalpostStatus, String journalfoerendeEnhet) {
         return journalforingService.ferdigstillJournalpost(
                 journalpostStatus,
-                journalpostId);
+                journalpostId,
+                journalfoerendeEnhet);
     }
 }

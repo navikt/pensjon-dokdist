@@ -1,5 +1,8 @@
 package no.nav.pensjondokdist.distribuerjournalpost.dto;
 
+import no.nav.pensjondokdist.journalforing.dto.DistribusjonsTidspunkt;
+import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
+
 public final class DistribuerJournalpostRequest {
 
     private String journalpostId;
@@ -7,13 +10,17 @@ public final class DistribuerJournalpostRequest {
     private String bestillendeFagsystem;
     private String dokumentProdApp;
     private Adresse adresse;
+    private Distribusjonstype distribusjonstype;
+    private DistribusjonsTidspunkt distribusjonsTidspunkt;
 
-    public DistribuerJournalpostRequest(String journalpostId, String batchId, String bestillendeFagsystem, String dokumentProdApp, Adresse adresse) {
+    public DistribuerJournalpostRequest(String journalpostId, String batchId, String bestillendeFagsystem, String dokumentProdApp, Adresse adresse, Distribusjonstype distribusjonstype, DistribusjonsTidspunkt distribusjonsTidspunkt) {
         this.journalpostId = journalpostId;
         this.batchId = batchId;
         this.bestillendeFagsystem = bestillendeFagsystem;
         this.dokumentProdApp = dokumentProdApp;
         this.adresse = adresse;
+        this.distribusjonstype = distribusjonstype;
+        this.distribusjonsTidspunkt = distribusjonsTidspunkt;
     }
 
     public DistribuerJournalpostRequest() {
@@ -21,6 +28,14 @@ public final class DistribuerJournalpostRequest {
 
     public static DistribuerJournalpostRequestBuilder builder() {
         return new DistribuerJournalpostRequestBuilder();
+    }
+
+    public DistribusjonsTidspunkt getDistribusjonsTidspunkt() {
+        return distribusjonsTidspunkt;
+    }
+
+    public Distribusjonstype getDistribusjonstype() {
+        return distribusjonstype;
     }
 
     public String getJournalpostId() {
@@ -49,12 +64,24 @@ public final class DistribuerJournalpostRequest {
         private String bestillendeFagsystem;
         private String dokumentProdApp;
         private Adresse adresse;
+        private Distribusjonstype distribusjonstype;
+        private DistribusjonsTidspunkt distribusjonsTidspunkt;
 
         DistribuerJournalpostRequestBuilder() {
         }
 
         public DistribuerJournalpostRequest.DistribuerJournalpostRequestBuilder journalpostId(String journalpostId) {
             this.journalpostId = journalpostId;
+            return this;
+        }
+
+        public DistribuerJournalpostRequest.DistribuerJournalpostRequestBuilder distribusjonstype(Distribusjonstype distribusjonstype) {
+            this.distribusjonstype = distribusjonstype;
+            return this;
+        }
+
+        public DistribuerJournalpostRequest.DistribuerJournalpostRequestBuilder distribusjonsTidspunkt(DistribusjonsTidspunkt distribusjonsTidspunkt) {
+            this.distribusjonsTidspunkt = distribusjonsTidspunkt;
             return this;
         }
 
@@ -79,7 +106,7 @@ public final class DistribuerJournalpostRequest {
         }
 
         public DistribuerJournalpostRequest build() {
-            return new DistribuerJournalpostRequest(journalpostId, batchId, bestillendeFagsystem, dokumentProdApp, adresse);
+            return new DistribuerJournalpostRequest(journalpostId, batchId, bestillendeFagsystem, dokumentProdApp, adresse, distribusjonstype, distribusjonsTidspunkt);
         }
     }
 }

@@ -15,3 +15,4 @@ distribuer.journalpost.v1.url: "${DISTRIBUER_JOURNALPOST_URL:https://dokdistford
 dokarkiv.base.url: "${DOKARKIV_BASE_URL:https://dokarkiv-q2.nais.preprod.local}"
 saf.graphql: "${SAF_GRAPHQL:https://saf-q2.nais.preprod.local/graphql/}"
 sts.url: "${STS_URL:https://security-token-service.nais.preprod.local/rest/v1/sts/token?grant_type=client_credentials&scope=openid}"
+brevmetadata.url: "${BREVMETADATA_URL:https://pensjon-brevmetadata.dev.intern.nav.no}"

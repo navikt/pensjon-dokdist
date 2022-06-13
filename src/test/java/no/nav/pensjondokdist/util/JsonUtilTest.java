@@ -7,6 +7,8 @@ import static no.nav.pensjondokdist.util.JsonUtil.toObjectFromJsonString;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import no.nav.pensjondokdist.journalforing.dto.DistribusjonsTidspunkt;
+import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
 import org.junit.Test;
 
 import no.nav.pensjondokdist.distribuerjournalpost.dto.Adresse;
@@ -28,7 +30,7 @@ public class JsonUtilTest {
 
         DistribuerJournalpostRequest distribuerJournalpostRequest
                 = new DistribuerJournalpostRequest("12345", "cd123", "AT05", "test",
-                adresse);
+                adresse, Distribusjonstype.ANNET, DistribusjonsTidspunkt.KJERNETID);
         String jsonString = toJsonString(distribuerJournalpostRequest);
         DistribuerJournalpostRequest requestFromJsonString = toObjectFromJsonString(jsonString, new TypeReference<DistribuerJournalpostRequest>(){});
 

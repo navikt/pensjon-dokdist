@@ -46,7 +46,7 @@ public class SafClientTest {
 
         server.expect(manyTimes(), requestTo(URL))
                 .andRespond(withSuccess(getJsonString(), MediaType.APPLICATION_JSON));
-        client.get("12345");
+        client.fetchJournal("12345");
         server.verify();
     }
 
@@ -55,7 +55,7 @@ public class SafClientTest {
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
         server.expect(manyTimes(), requestTo(URL))
                 .andRespond(withSuccess("", MediaType.APPLICATION_JSON));
-        client.get("12345");
+        client.fetchJournal("12345");
         server.verify();
     }
 
@@ -64,7 +64,7 @@ public class SafClientTest {
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
         server.expect(manyTimes(), requestTo(URL))
                 .andRespond(withBadRequest());
-        client.get("12345");
+        client.fetchJournal("12345");
         server.verify();
     }
 

@@ -1,5 +1,6 @@
 package no.nav.pensjondokdist.journalforing;
 
+import no.nav.pensjondokdist.saf.model.Journalpost;
 import org.springframework.stereotype.Service;
 
 import no.nav.pensjondokdist.journalforing.dto.FerdigstillJournalpostRequest;
@@ -18,11 +19,11 @@ public class JournalforingService {
         this.stsService = stsService;
     }
 
-    public Boolean ferdigstillJournalpost(String journalpostStatus, String journalpostId) {
+    public Boolean ferdigstillJournalpost(String journalpostStatus, String journalpostId, String journalfoerendeEnhet) {
         if (journalpostStatus.equals("FS")) {
             return true;
         } else if (journalpostStatus.equals("FL")) {
-            FerdigstillJournalpostRequest request = new FerdigstillJournalpostRequest(getJournalforendeEnhet(journalpostId));
+            FerdigstillJournalpostRequest request = new FerdigstillJournalpostRequest(journalfoerendeEnhet);
             return client.execute(journalpostId, request, getServiceBrukerToken());
         } else {
             return false;
@@ -31,9 +32,5 @@ public class JournalforingService {
 
     private String getServiceBrukerToken() {
         return stsService.getSystemBrukerToken();
-    }
-
-    private String getJournalforendeEnhet(String journalpostId) {
-        return safService.hentJournalforendeEnhet(journalpostId);
     }
 }

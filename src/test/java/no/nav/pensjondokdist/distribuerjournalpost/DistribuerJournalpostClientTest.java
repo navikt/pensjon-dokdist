@@ -39,7 +39,7 @@ public class DistribuerJournalpostClientTest {
 
         server.expect(manyTimes(), requestTo(URL))
                 .andRespond(withSuccess("", MediaType.APPLICATION_JSON));
-        client.post(new DistribuerJournalpostRequest("12345", null, null, null, null));
+        client.post(new DistribuerJournalpostRequest("12345", null, null, null, null, null, null));
         server.verify();
     }
 
@@ -48,7 +48,7 @@ public class DistribuerJournalpostClientTest {
         MockRestServiceServer server = MockRestServiceServer.bindTo(restTemplate).build();
         server.expect(manyTimes(), requestTo(URL))
                 .andRespond(withBadRequest());
-        client.post(new DistribuerJournalpostRequest("12345", null, null, null, null));
+        client.post(new DistribuerJournalpostRequest("12345", null, null, null, null, null, null));
         server.verify();
     }
 }

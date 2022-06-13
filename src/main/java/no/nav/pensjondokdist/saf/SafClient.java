@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import no.nav.pensjondokdist.saf.model.Journalpost;
 import org.apache.commons.codec.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,7 @@ public class SafClient {
         query = StreamUtils.copyToString(new ClassPathResource("saf/journalpostQuery.graphql").getInputStream(), Charsets.UTF_8);
     }
 
-    String get(String journalpostId) {
+    Journalpost fetchJournal(String journalpostId) {
         GraphQlRequest graphQlRequest = new GraphQlRequest(query, new Variables(journalpostId));
         try {
             ResponseEntity<String> entity = restTemplate.exchange(url, HttpMethod.POST,
@@ -58,7 +59,7 @@ public class SafClient {
         }
     }
 
-    private String handleResponse(ResponseEntity<String> entity, String journalpostId) {
+    private Journalpost handleResponse(ResponseEntity<String> entity, String journalpostId) {
         if (entity.getStatusCode() == HttpStatus.OK && entity.getBody() != null) {
             GraphQlResponse graphQlResponse = toObjectFromJsonString(entity.getBody(), new TypeReference<GraphQlResponse>() {
             });
@@ -74,9 +75,7 @@ public class SafClient {
                 logger.error(errors);
                 throw new PensjonDokdistException(errors);
             }
-            String journalforendeEnhet = graphQlResponse.getData().getJournalpost().getJournalforendeEnhet();
-            logger.info("Hentet journalforendeEnhet fra SAF. JouranlpostId: " + journalpostId + " journalforendeEnhet: " + journalforendeEnhet);
-            return journalforendeEnhet;
+            return graphQlResponse.getData().getJournalpost();
         } else {
             logger.error("Fant ikke journalpost: " + journalpostId);
             throw new PensjonDokdistException("Fant ikke journalpost. StatusCode: " + entity.getStatusCode().value());
