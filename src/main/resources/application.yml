@@ -11,7 +11,7 @@ spring:
                         issuer-uri: "${OIDC_ISSUER_URI:https://isso-q.adeo.no:443/isso/oauth2}"
                         isso-host: "${OIDC_ISSUER_HOST:https://isso-q.adeo.no/isso/oauth2}"
 
-distribuer.journalpost.v1.url: "${DISTRIBUER_JOURNALPOST_URL:https://dokdistfordeling-q2.dev-fss.nais.io/rest/v1/distribuerjournalpost}"
+distribuer.journalpost.v1.url: "${DISTRIBUER_JOURNALPOST_URL:https://dokdistfordeling.dev.intern.nav.no/rest/v1/distribuerjournalpost}"
 dokarkiv.base.url: "${DOKARKIV_BASE_URL:https://dokarkiv-q2.nais.preprod.local}"
 saf.graphql: "${SAF_GRAPHQL:https://saf-q2.nais.preprod.local/graphql/}"
 sts.url: "${STS_URL:https://security-token-service.nais.preprod.local/rest/v1/sts/token?grant_type=client_credentials&scope=openid}"
