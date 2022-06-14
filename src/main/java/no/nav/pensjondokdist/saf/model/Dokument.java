@@ -1,6 +1,11 @@
 package no.nav.pensjondokdist.saf.model;
 
 public class Dokument {
+
+    public Dokument(){
+
+    }
+
     String brevkode;
 
     public Dokument(String brevkode) {
