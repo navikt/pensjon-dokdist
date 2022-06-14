@@ -1,27 +1,21 @@
 package no.nav.pensjondokdist.saf.model;
 
+import java.util.List;
+
 public class Journalpost {
     private String journalpostId;
     private String journalforendeEnhet;
-    private String brevkode;
+    private List<Dokument> dokumenter;
 
     public Journalpost() {
     }
 
-    public String getBrevkode() {
-        return brevkode;
+    public List<Dokument> getDokumenter() {
+        return dokumenter;
     }
 
-    public String getJournalpostId() {
-        return journalpostId;
-    }
-
-    public void setBrevkode(String brevkode) {
-        this.brevkode = brevkode;
-    }
-
-    public void setJournalpostId(String journalpostId) {
-        this.journalpostId = journalpostId;
+    public void setDokumenter(List<Dokument> dokumenter) {
+        this.dokumenter = dokumenter;
     }
 
     public String getJournalforendeEnhet() {
@@ -30,6 +24,14 @@ public class Journalpost {
 
     public void setJournalforendeEnhet(String journalforendeEnhet) {
         this.journalforendeEnhet = journalforendeEnhet;
+    }
+
+    public String getJournalpostId() {
+        return journalpostId;
+    }
+
+    public void setJournalpostId(String journalpostId) {
+        this.journalpostId = journalpostId;
     }
 
 }

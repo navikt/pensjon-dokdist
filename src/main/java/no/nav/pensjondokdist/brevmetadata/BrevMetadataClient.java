@@ -31,7 +31,6 @@ public class BrevMetadataClient {
 
     public Brevdata fetchBrevmetadata(String brevkode) {
         String absoluteUrl = url + "/api/brevdata/brevForBrevkode/" + brevkode;
-        logger.info(absoluteUrl);
         return restTemplate.getForObject(absoluteUrl, Brevdata.class);
     }
 }
