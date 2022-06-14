@@ -2,6 +2,7 @@ package no.nav.pensjondokdist.distribuerjournalpost;
 
 import static no.nav.pensjondokdist.util.JsonUtil.toJsonString;
 
+import no.nav.pensjondokdist.PensjonDokdistException;
 import no.nav.pensjondokdist.brevmetadata.DokumentkategoriCode;
 import no.nav.pensjondokdist.journalforing.dto.DistribusjonsTidspunkt;
 import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
@@ -39,7 +40,6 @@ public class DistribuerJournalpostService {
 
     public Distribusjonstype dokumentkategoriToDistribusjonstype(DokumentkategoriCode dokumentkategoriCode) {
         switch (dokumentkategoriCode){
-            case IB:
             case EP:
             case ES:
             case E_BLANKETT:
@@ -50,8 +50,11 @@ public class DistribuerJournalpostService {
             case KS:
             case SED:
             case TS:
-            case B:
+                throw new PensjonDokdistException("Ugyldig dokumentkategorikode for distribusjon");
+            case IB:
                 return Distribusjonstype.ANNET;
+            case B:
+                return Distribusjonstype.VIKTIG;
             case VB:
                 return Distribusjonstype.VEDTAK;
         }
