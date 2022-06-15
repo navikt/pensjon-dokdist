@@ -3,7 +3,7 @@ package no.nav.pensjondokdist.journalforing.dto;
 public class FerdigstillJournalpostRequest {
     private String journalfoerendeEnhet;
     private Distribusjonstype distribusjonstype;
-    private DistribusjonsTidspunkt distribusjonsTidspunkt;
+    private Distribusjonstidspunkt distribusjonstidspunkt;
 
     public FerdigstillJournalpostRequest() {
 
@@ -17,8 +17,8 @@ public class FerdigstillJournalpostRequest {
         return this.journalfoerendeEnhet;
     }
 
-    public void setDistribusjonsTidspunkt(DistribusjonsTidspunkt distribusjonsTidspunkt) {
-        this.distribusjonsTidspunkt = distribusjonsTidspunkt;
+    public void setDistribusjonstidspunkt(Distribusjonstidspunkt distribusjonstidspunkt) {
+        this.distribusjonstidspunkt = distribusjonstidspunkt;
     }
 
     public void setDistribusjonstype(Distribusjonstype distribusjonstype) {

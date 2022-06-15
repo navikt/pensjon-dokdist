@@ -28,7 +28,6 @@ public class DistribuerJournalpostClient {
 
     DistribuerJournalpostResponse post(DistribuerJournalpostRequest request) {
         try {
-            logger.info("url: " + url + "request: " + new ObjectMapper().writeValueAsString(request)); //TODO remove.
             return restTemplate.postForObject(url, new HttpEntity<>(request, oidcProvider.getHeaders()), DistribuerJournalpostResponse.class);
         } catch (Exception e) {
             logger.error("Kunne ikke distribuere journalpost for journalpostId: " + request.getJournalpostId());

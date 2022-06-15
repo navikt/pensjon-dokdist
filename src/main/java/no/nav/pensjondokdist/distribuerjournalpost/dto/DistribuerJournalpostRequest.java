@@ -1,6 +1,6 @@
 package no.nav.pensjondokdist.distribuerjournalpost.dto;
 
-import no.nav.pensjondokdist.journalforing.dto.DistribusjonsTidspunkt;
+import no.nav.pensjondokdist.journalforing.dto.Distribusjonstidspunkt;
 import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
 
 public final class DistribuerJournalpostRequest {
@@ -11,16 +11,16 @@ public final class DistribuerJournalpostRequest {
     private String dokumentProdApp;
     private Adresse adresse;
     private Distribusjonstype distribusjonstype;
-    private DistribusjonsTidspunkt distribusjonsTidspunkt;
+    private Distribusjonstidspunkt distribusjonstidspunkt;
 
-    public DistribuerJournalpostRequest(String journalpostId, String batchId, String bestillendeFagsystem, String dokumentProdApp, Adresse adresse, Distribusjonstype distribusjonstype, DistribusjonsTidspunkt distribusjonsTidspunkt) {
+    public DistribuerJournalpostRequest(String journalpostId, String batchId, String bestillendeFagsystem, String dokumentProdApp, Adresse adresse, Distribusjonstype distribusjonstype, Distribusjonstidspunkt distribusjonstidspunkt) {
         this.journalpostId = journalpostId;
         this.batchId = batchId;
         this.bestillendeFagsystem = bestillendeFagsystem;
         this.dokumentProdApp = dokumentProdApp;
         this.adresse = adresse;
         this.distribusjonstype = distribusjonstype;
-        this.distribusjonsTidspunkt = distribusjonsTidspunkt;
+        this.distribusjonstidspunkt = distribusjonstidspunkt;
     }
 
     public DistribuerJournalpostRequest() {
@@ -30,8 +30,8 @@ public final class DistribuerJournalpostRequest {
         return new DistribuerJournalpostRequestBuilder();
     }
 
-    public DistribusjonsTidspunkt getDistribusjonsTidspunkt() {
-        return distribusjonsTidspunkt;
+    public Distribusjonstidspunkt getDistribusjonstidspunkt() {
+        return distribusjonstidspunkt;
     }
 
     public Distribusjonstype getDistribusjonstype() {
@@ -65,7 +65,7 @@ public final class DistribuerJournalpostRequest {
         private String dokumentProdApp;
         private Adresse adresse;
         private Distribusjonstype distribusjonstype;
-        private DistribusjonsTidspunkt distribusjonsTidspunkt;
+        private Distribusjonstidspunkt distribusjonstidspunkt;
 
         DistribuerJournalpostRequestBuilder() {
         }
@@ -80,8 +80,8 @@ public final class DistribuerJournalpostRequest {
             return this;
         }
 
-        public DistribuerJournalpostRequest.DistribuerJournalpostRequestBuilder distribusjonsTidspunkt(DistribusjonsTidspunkt distribusjonsTidspunkt) {
-            this.distribusjonsTidspunkt = distribusjonsTidspunkt;
+        public DistribuerJournalpostRequest.DistribuerJournalpostRequestBuilder distribusjonstidspunkt(Distribusjonstidspunkt distribusjonstidspunkt) {
+            this.distribusjonstidspunkt = distribusjonstidspunkt;
             return this;
         }
 
@@ -106,7 +106,7 @@ public final class DistribuerJournalpostRequest {
         }
 
         public DistribuerJournalpostRequest build() {
-            return new DistribuerJournalpostRequest(journalpostId, batchId, bestillendeFagsystem, dokumentProdApp, adresse, distribusjonstype, distribusjonsTidspunkt);
+            return new DistribuerJournalpostRequest(journalpostId, batchId, bestillendeFagsystem, dokumentProdApp, adresse, distribusjonstype, distribusjonstidspunkt);
         }
     }
 }

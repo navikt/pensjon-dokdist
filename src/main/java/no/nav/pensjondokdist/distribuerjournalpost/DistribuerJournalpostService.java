@@ -4,7 +4,7 @@ import static no.nav.pensjondokdist.util.JsonUtil.toJsonString;
 
 import no.nav.pensjondokdist.PensjonDokdistException;
 import no.nav.pensjondokdist.brevmetadata.DokumentkategoriCode;
-import no.nav.pensjondokdist.journalforing.dto.DistribusjonsTidspunkt;
+import no.nav.pensjondokdist.journalforing.dto.Distribusjonstidspunkt;
 import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class DistribuerJournalpostService {
                 DistribuerJournalpostRequest.builder()
                         .journalpostId(journalId)
                         .distribusjonstype(dokumentkategoriToDistribusjonstype(dokumentKategori))
-                        .distribusjonsTidspunkt(DistribusjonsTidspunkt.KJERNETID)
+                        .distribusjonstidspunkt(Distribusjonstidspunkt.KJERNETID)
                         .bestillendeFagsystem(BESTILLENDE_FAGSYSTEM)
                         .dokumentProdApp(BESTILLENDE_FAGSYSTEM)
                         .adresse(request.getAdresse())
