@@ -23,7 +23,7 @@ public class DistribuerJournalpostService {
     }
 
     public DistribuerJournalpostResponse distribuerJournalpost(String journalId, PensjondokdistRequest request, Distribusjonstype distribusjonstype) {
-        LOG.debug("journalId: " + journalId + " DistribuerJournalpostRequet: " + toJsonString(request));
+        LOG.debug("journalId: " + journalId + " DistribuerJournalpostRequest: " + toJsonString(request));
 
         return distribuerJournalpostClient.post(
                 DistribuerJournalpostRequest.builder()
@@ -34,6 +34,19 @@ public class DistribuerJournalpostService {
                         .dokumentProdApp(BESTILLENDE_FAGSYSTEM)
                         .adresse(request.getAdresse())
                         .build());
+    }
+
+    public Distribusjonstype dokzumentkategoriToDistribusjonstype(DokumentkategoriCode dokumentkategoriCode) {
+        switch (dokumentkategoriCode){
+            case IB:
+                return Distribusjonstype.ANNET;
+            case B:
+                return Distribusjonstype.VIKTIG;
+            case VB:
+                return Distribusjonstype.VEDTAK;
+            default:
+                throw new PensjonDokdistException("Ugyldig dokumentkategorikode for distribusjon");
+        }
     }
 }
 
