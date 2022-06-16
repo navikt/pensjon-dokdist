@@ -38,7 +38,7 @@ spec:
     - name: "DISTRIBUER_JOURNALPOST_URL"
       value: "https://dokdistfordeling.dev.intern.nav.no/rest/v1/distribuerjournalpost"
     - name: "DOKARKIV_BASE_URL"
-      value: "https://dokarkiv-q2.nais.preprod.local"
+      value: "https://dokarkiv.dev.intern.nav.no"
     - name: "SAF_GRAPHQL"
       value: "https://saf-q2.nais.preprod.local/graphql"
     - name: "STS_URL"
