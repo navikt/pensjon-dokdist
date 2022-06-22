@@ -1,17 +1,9 @@
-import React, { useReducer } from 'react';
+import React, {useReducer} from 'react';
 import {fetch} from 'whatwg-fetch'
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    useParams,
-    useLocation
-} from "react-router-dom";
-import {Sidetittel, Systemtittel} from "nav-frontend-typografi";
-import { Hovedknapp } from 'nav-frontend-knapper';
-import { AlertStripeSuksess, AlertStripeFeil } from 'nav-frontend-alertstriper';
+import {BrowserRouter as Router, Route, Routes, useLocation, useParams} from "react-router-dom";
+import {Alert, Button, Heading} from "@navikt/ds-react";
 
-async function distribuerJournalpost({ id, status }) {
+async function distribuerJournalpost({id, status}) {
     console.log('distribuer', id);
     console.log('status', status);
     const response = await fetch(`/api/journalpost/${id}/send`, {
@@ -19,8 +11,8 @@ async function distribuerJournalpost({ id, status }) {
         credentials: 'same-origin',
         headers: {
             'Content-type': "application/json"
-            },
-        body:JSON.stringify({
+        },
+        body: JSON.stringify({
             journalpostId: id,
             status
         })
@@ -36,6 +28,7 @@ async function distribuerJournalpost({ id, status }) {
 const initialState = {
     status: 'INITIAL'
 };
+
 function reducer(state, action) {
     console.log(action.type, action);
     switch (action.type) {
@@ -67,15 +60,15 @@ function Journalpost() {
     const queryParams = new URLSearchParams(location.search);
     const status = queryParams.get('status');
 
-    const { id } = useParams();
+    const {id} = useParams();
 
     const handleSubmit = async () => {
         try {
-            dispatch({ type: 'SUBMIT' });
-            await distribuerJournalpost({ id, status });
-            dispatch({ type: 'SUBMIT_SUCCESS' });
+            dispatch({type: 'SUBMIT'});
+            await distribuerJournalpost({id, status});
+            dispatch({type: 'SUBMIT_SUCCESS'});
         } catch (err) {
-            dispatch({ type: 'SUBMIT_ERROR' });
+            dispatch({type: 'SUBMIT_ERROR'});
         }
     };
 
@@ -87,26 +80,11 @@ function Journalpost() {
 
     return (
         <div>
-            <Systemtittel>Journalpost med ID: {id}</Systemtittel>
-            {shouldShowButton && <Hovedknapp onClick={handleSubmit} disabled={inProgress} spinner={inProgress}>{label}</Hovedknapp>}
-            {isSuccess && <AlertStripeSuksess>Journalpost er nå sendt.</AlertStripeSuksess>}
-            {isError && <AlertStripeFeil>Noe gikk visst galt!</AlertStripeFeil>}
+            <Heading size={"large"}>Journalpost med ID: {id}</Heading>
+            {shouldShowButton &&
+                <Button onClick={handleSubmit} disabled={inProgress} spinner={inProgress}>{label}</Button>}
+            {isSuccess && <Alert variant="success">Journalpost er nå sendt.</Alert>}
+            {isError && <Alert variant="error">Noe gikk visst galt!</Alert>}
         </div>
-    );
-}
-
-export default function Application() {
-    return (
-        <Router>
-            <Sidetittel>Distribusjon av brevet</Sidetittel>
-            <Switch>
-                <Route path="/journalpost/:id">
-                    <Journalpost/>
-                </Route>
-                <Route path="/">
-                    <div>Forside</div>
-                </Route>
-            </Switch>
-        </Router>
     );
 }

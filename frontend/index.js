@@ -1,12 +1,22 @@
 import * as React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import {StrictMode} from 'react';
 import 'regenerator-runtime';
 import 'core-js';
+import Application from "./Application";
+import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 
-import Application from './Application';
 
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
 
-const el = document.createElement('div');
-document.body.appendChild(el);
-
-ReactDOM.render(React.createElement(Application), el);
+root.render(
+    <StrictMode>
+        <Router>
+            <Routes>
+                <Route path="/" element={<div>test</div>} />
+                <Route path="about" element={<div>test2</div>} />
+            </Routes>
+        </Router>
+    </StrictMode>,
+);

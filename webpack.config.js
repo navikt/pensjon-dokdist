@@ -10,11 +10,11 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ['babel-loader']
+                loader: "babel-loader"
             },
             {
                 test: /\.less$/,
-                loader: ['style-loader', 'css-loader', 'less-loader']
+                loader: 'less-loader'
             }
         ]
     },
@@ -34,12 +34,4 @@ module.exports = {
             // 'X-UA-Compatible': 'content="IE=edge"'
         }
     })],
-    devtool: "eval",
-    devServer: {
-        contentBase: false,
-        historyApiFallback: true,
-        proxy: {
-            '/api': 'http://localhost:8081'
-        }
-    }
 };
