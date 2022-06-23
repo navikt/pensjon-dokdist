@@ -1,7 +1,8 @@
-import React, {useReducer} from 'react';
-import {fetch} from 'whatwg-fetch'
-import {BrowserRouter as Router, Route, Routes, useLocation, useParams} from "react-router-dom";
-import {Alert, Button, Heading} from "@navikt/ds-react";
+import React, {useReducer} from "react";
+import {useLocation, useParams} from "react-router-dom";
+import {Alert, Button, Heading, Radio, RadioGroup} from "@navikt/ds-react";
+import {fetch} from "whatwg-fetch";
+import NoPage from "./NoPage";
 
 async function distribuerJournalpost({id, status}) {
     console.log('distribuer', id);
@@ -18,9 +19,7 @@ async function distribuerJournalpost({id, status}) {
         })
     });
 
-    if (response.status === 200) {
-        return;
-    } else {
+    if (response.status !== 200) {
         throw new Error('Noe gikk galt');
     }
 }
@@ -85,6 +84,15 @@ function Journalpost() {
                 <Button onClick={handleSubmit} disabled={inProgress} spinner={inProgress}>{label}</Button>}
             {isSuccess && <Alert variant="success">Journalpost er nå sendt.</Alert>}
             {isError && <Alert variant="error">Noe gikk visst galt!</Alert>}
+            <RadioGroup legend="Velg din aldersgruppe."
+                size="medium">
+                <Radio value="10">10-20 år</Radio>
+                <Radio value="20">21-45 år</Radio>
+                <Radio value="40">46-80 år</Radio>
+            </RadioGroup>
         </div>
     );
 }
+
+
+export default Journalpost;

@@ -4,7 +4,7 @@
   "description": "Frontend for the pensjon-dokdist app",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --mode development",
+    "dev": "webpack serve --config webpack.dev.js",
     "build": "webpack --mode production",
     "mock-backend": "node mock-backend.js"
   },
@@ -40,6 +40,7 @@
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
     "regenerator-runtime": "^0.13.9",
+    "webpack-merge": "^5.8.0",
     "whatwg-fetch": "^3.6.2"
   }
 }
