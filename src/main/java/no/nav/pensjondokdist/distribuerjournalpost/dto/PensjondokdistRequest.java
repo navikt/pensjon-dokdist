@@ -2,10 +2,13 @@ package no.nav.pensjondokdist.distribuerjournalpost.dto;
 
 import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
 
+import javax.validation.constraints.NotNull;
+
 public class PensjondokdistRequest {
     private Adresse adresse;
+    @NotNull
     private String status;
-    private Distribusjonstype type;
+    private Distribusjonstype distribusjonstype;
 
     public PensjondokdistRequest() {
 
@@ -15,12 +18,16 @@ public class PensjondokdistRequest {
         return adresse;
     }
 
-    public Distribusjonstype getType() {
-        return type;
-    }
-
     public void setAdresse(Adresse adresse) {
         this.adresse = adresse;
+    }
+
+    public Distribusjonstype getDistribusjonstype() {
+        return distribusjonstype;
+    }
+
+    public void setDistribusjonstype(Distribusjonstype distribusjonstype) {
+        this.distribusjonstype = distribusjonstype;
     }
 
     public String getStatus() {
@@ -31,7 +38,4 @@ public class PensjondokdistRequest {
         this.status = status;
     }
 
-    public void setType(Distribusjonstype type) {
-        this.type = type;
-    }
 }

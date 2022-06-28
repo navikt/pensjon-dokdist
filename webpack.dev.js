@@ -21,6 +21,6 @@ module.exports = merge(common, module.exports = {
         clean: true,
     },
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
     }
 })

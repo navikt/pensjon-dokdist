@@ -14,10 +14,12 @@ root.render(
     <StrictMode>
         <Router>
             <Routes>
-                <Route exact path="/" element={<Layout />}>
+                <Route path="/" element={<Layout />}>
                     <Route index element={<h1>teeee</h1>} />
                 </Route>
-                <Route path="test" element={<Journalpost/>} />
+                <Route path="journalpost">
+                    <Route path=":id" element={<Journalpost/>} />
+                </Route>
             </Routes>
         </Router>
     </StrictMode>,

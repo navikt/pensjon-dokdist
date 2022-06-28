@@ -11,16 +11,17 @@ import no.nav.pensjondokdist.saf.model.Journalpost;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 
 @Controller
 public class PensjonDokdistController {
+    public static final String FRITEKST_BREV_KODE = "PE_IY_05_300";
     private static Logger logger = LoggerFactory.getLogger(PensjonDokdistController.class);
     private final SafService safService;
     private final BrevMetadataService brevMetadataService;
@@ -44,8 +45,19 @@ public class PensjonDokdistController {
                 journalfoerendeEnhet);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/api/journalpost/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public JournalpostInfo erFritekst(@PathVariable("id") String journalpostId) {
+        Journalpost journalpost = safService.hentJournalPost(journalpostId);
+        String brevkode = journalpost.getDokumenter().stream().findFirst()
+                .orElseThrow(() -> new PensjonDokdistException("Journalpost: " + journalpostId + " mangler dokumenter"))
+                .getBrevkode();
+        return new JournalpostInfo(journalpostId, brevkode.equals(FRITEKST_BREV_KODE));
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/api/journalpost/{id}/send", method = RequestMethod.POST)
-    public ResponseEntity sendJournalbrev(@PathVariable("id") String journalpostId, @RequestBody PensjondokdistRequest request) {
+    public ResponseEntity<String> sendJournalbrev(@PathVariable("id") String journalpostId, @Valid @RequestBody PensjondokdistRequest request) {
         Journalpost journalpost = safService.hentJournalPost(journalpostId);
         String brevkode = journalpost.getDokumenter().stream().findFirst()
                 .orElseThrow(() -> new PensjonDokdistException("Journalpost: " + journalpostId + " mangler dokumenter"))

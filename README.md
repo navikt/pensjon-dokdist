@@ -10,11 +10,11 @@ Løsning for sentral print/dokumentdistribusjon
 - Kjør main-metoden til `PensjonDokdistApplication`
 - Åpne nettleser `http://localhost:8080`
 
-### Utvikle frontend lokalt, mot lokal backend
+### Utvikle frontend lokalt, mot lokal backend med autentisering
 
-- Start backend lokalt, men med VM option `-Dserver.port=8081`
-- Kjør `npm ci` (hvis avhengigheter i `package.json` har blitt endret siden sist kjøring)
-- Kjør `npm run dev`
+- Kjør `npm build`. Filer bygges til resources i back-end.
+- Start backend lokalt.
+
 - Åpne nettleser: `http://localhost:8080`
 
 Nå vil webpack automatisk oppdatere ressurser (HTML, CSS, JavaScript)
