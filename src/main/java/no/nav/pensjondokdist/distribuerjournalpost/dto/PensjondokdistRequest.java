@@ -1,7 +1,5 @@
 package no.nav.pensjondokdist.distribuerjournalpost.dto;
 
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
-
 import javax.validation.constraints.NotNull;
 
 public class PensjondokdistRequest {

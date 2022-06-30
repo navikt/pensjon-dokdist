@@ -4,8 +4,8 @@ import static no.nav.pensjondokdist.util.JsonUtil.toJsonString;
 
 import no.nav.pensjondokdist.PensjonDokdistException;
 import no.nav.pensjondokdist.brevmetadata.DokumentkategoriCode;
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstidspunkt;
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstidspunkt;
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstype;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

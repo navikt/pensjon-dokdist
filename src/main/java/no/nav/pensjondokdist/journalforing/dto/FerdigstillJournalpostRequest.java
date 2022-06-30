@@ -1,5 +1,8 @@
 package no.nav.pensjondokdist.journalforing.dto;
 
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstidspunkt;
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstype;
+
 public class FerdigstillJournalpostRequest {
     private String journalfoerendeEnhet;
     private Distribusjonstype distribusjonstype;

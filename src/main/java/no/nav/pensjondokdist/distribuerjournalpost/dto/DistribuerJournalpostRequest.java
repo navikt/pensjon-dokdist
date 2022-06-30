@@ -1,8 +1,5 @@
 package no.nav.pensjondokdist.distribuerjournalpost.dto;
 
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstidspunkt;
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
-
 public final class DistribuerJournalpostRequest {
 
     private String journalpostId;

@@ -7,8 +7,8 @@ import static no.nav.pensjondokdist.util.JsonUtil.toObjectFromJsonString;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstidspunkt;
-import no.nav.pensjondokdist.journalforing.dto.Distribusjonstype;
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstidspunkt;
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstype;
 import org.junit.Test;
 
 import no.nav.pensjondokdist.distribuerjournalpost.dto.Adresse;

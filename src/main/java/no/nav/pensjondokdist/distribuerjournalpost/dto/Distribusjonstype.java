@@ -1,4 +1,4 @@
-package no.nav.pensjondokdist.journalforing.dto;
+package no.nav.pensjondokdist.distribuerjournalpost.dto;
 
 public enum Distribusjonstype {
     VEDTAK,
