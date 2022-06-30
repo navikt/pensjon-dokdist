@@ -33,10 +33,9 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
             distribusjonstype
         })
     });
-    const body = await response.json()
-
     if (response.status !== 200) {
         setStatus('SUBMITTED')
+        const body = await response.json()
         setErrorMessage("Feil ved distribuering journalpost. Melding: " + body.message)
     } else {
         setStatus('SUBMITTED')
@@ -74,7 +73,7 @@ function Journalpost() {
     const journalStatus = queryParams.get('status');
 
     const handleSubmit = async () => {
-        if (distribusjonstype === undefined) {
+        if (distribusjonstype === undefined && isFritekst) {
             setErrorMessage("Varslingsmetode må fylles inn")
         } else {
             distribuerJournalpost({
