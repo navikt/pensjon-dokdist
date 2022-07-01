@@ -1,9 +1,9 @@
 package no.nav.pensjondokdist;
 
 import no.nav.pensjondokdist.brevmetadata.BrevMetadataService;
-import no.nav.pensjondokdist.brevmetadata.DokumentkategoriCode;
 import no.nav.pensjondokdist.distribuerjournalpost.DistribuerJournalpostService;
 import no.nav.pensjondokdist.distribuerjournalpost.dto.DistribuerJournalpostResponse;
+import no.nav.pensjondokdist.distribuerjournalpost.dto.Distribusjonstype;
 import no.nav.pensjondokdist.distribuerjournalpost.dto.PensjondokdistRequest;
 import no.nav.pensjondokdist.journalforing.JournalforingService;
 import no.nav.pensjondokdist.saf.SafService;
@@ -22,11 +22,11 @@ import javax.validation.Valid;
 @Controller
 public class PensjonDokdistController {
     public static final String FRITEKST_BREV_KODE = "PE_IY_05_300";
-    private static Logger logger = LoggerFactory.getLogger(PensjonDokdistController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PensjonDokdistController.class);
     private final SafService safService;
     private final BrevMetadataService brevMetadataService;
-    private DistribuerJournalpostService distribuerJournalpostService;
-    private JournalforingService journalforingService;
+    private final DistribuerJournalpostService distribuerJournalpostService;
+    private final JournalforingService journalforingService;
 
     public PensjonDokdistController(DistribuerJournalpostService distribuerJournalpostService,
                                     JournalforingService journalforingService,
@@ -36,6 +36,22 @@ public class PensjonDokdistController {
         this.journalforingService = journalforingService;
         this.safService = safService;
         this.brevMetadataService = brevMetadataService;
+    }
+
+    private Distribusjonstype bestemDistribusjonstype(Journalpost journalpost, Distribusjonstype distribusjonstype) {
+        String brevkode = journalpost.getDokumenter().stream().findFirst()
+                .orElseThrow(() -> new PensjonDokdistException("Journalpost: " + journalpost.getJournalpostId() + " mangler dokumenter"))
+                .getBrevkode();
+
+        if (brevkode.equals(FRITEKST_BREV_KODE)) {
+            if (distribusjonstype == null) {
+                throw new PensjonDokdistException("Mangler distribusjonstype ved distribusjon av fritekstbrev");
+            } else {
+                return distribusjonstype;
+            }
+        } else {
+            return brevMetadataService.fetchBrevdata(brevkode).getDokumentkategori().toDistribusjonstype();
+        }
     }
 
     private Boolean changeStatusJournalbrev(String journalpostId, String journalpostStatus, String journalfoerendeEnhet) {
@@ -59,15 +75,13 @@ public class PensjonDokdistController {
     @RequestMapping(value = "/api/journalpost/{id}/send", method = RequestMethod.POST)
     public ResponseEntity<String> sendJournalbrev(@PathVariable("id") String journalpostId, @Valid @RequestBody PensjondokdistRequest request) {
         Journalpost journalpost = safService.hentJournalPost(journalpostId);
-        String brevkode = journalpost.getDokumenter().stream().findFirst()
-                .orElseThrow(() -> new PensjonDokdistException("Journalpost: " + journalpostId + " mangler dokumenter"))
-                .getBrevkode();
-        DokumentkategoriCode dokumentKategori = brevMetadataService.fetchBrevdata(brevkode).getDokumentkategori();
+
+        Distribusjonstype distribusjonstype = bestemDistribusjonstype(journalpost, request.getDistribusjonstype());
 
         if (changeStatusJournalbrev(journalpostId, request.getStatus(), journalpost.getJournalforendeEnhet())) {
 
             DistribuerJournalpostResponse response = distribuerJournalpostService.distribuerJournalpost(
-                    journalpostId, request, dokumentKategori);
+                    journalpostId, request, distribusjonstype);
 
             if (!response.getBestillingsId().isEmpty()) {
                 logger.info("Journalpost: " + journalpostId + " bestillingsId: " + response.getBestillingsId());
