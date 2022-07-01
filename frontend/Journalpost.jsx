@@ -17,10 +17,15 @@ import {fetch} from "whatwg-fetch";
 import './Journalpost.css';
 
 
+const STATUS_INITIAL = 'INITIAL';
+const STATUS_READY_FOR_INPUT = 'READY_FOR_INPUT';
+const STATUS_SUBMITTING = 'SUBMITTING';
+const STATUS_SUBMITTED = 'SUBMITTED';
+
 async function distribuerJournalpost({id, status, distribusjonstype}, setStatus, setErrorMessage) {
     console.log('distribuer', id);
     console.log('status', status);
-    setStatus('SUBMITTING')
+    setStatus(STATUS_SUBMITTING)
     const response = await fetch(`/api/journalpost/${id}/send`, {
         method: 'POST',
         credentials: 'same-origin',
@@ -34,11 +39,11 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
         })
     });
     if (response.status !== 200) {
-        setStatus('SUBMITTED')
+        setStatus(STATUS_SUBMITTED)
         const body = await response.json()
         setErrorMessage("Feil ved distribuering journalpost. Melding: " + body.message)
     } else {
-        setStatus('SUBMITTED')
+        setStatus(STATUS_SUBMITTED)
         setErrorMessage(undefined)
     }
 }
@@ -53,14 +58,14 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
     if (response.status !== 200) {
         setErrorMessage("Feil ved henting av journalpostinfo. Melding: " + body.message)
     } else {
-        setStatus('READY_FOR_INPUT')
+        setStatus(STATUS_READY_FOR_INPUT)
         setIsFritekst(body.fritekst)
     }
 }
 
 function Journalpost() {
     const {id} = useParams();
-    const [status, setStatus] = useState('INITIAL');
+    const [status, setStatus] = useState(STATUS_INITIAL);
     const [isFritekst, setIsFritekst] = useState(false);
     const [errorMessage, setErrorMessage] = useState(undefined);
     const [distribusjonstype, setDistribusjonstype] = useState(() => {
@@ -84,15 +89,11 @@ function Journalpost() {
         }
     };
 
-    const onChangeVarslingsmetode = async (distribusjonstype) => {
-        setDistribusjonstype(distribusjonstype)
-    }
-
-    const inProgress = status === 'SUBMITTING';
+    const inProgress = status === STATUS_SUBMITTING;
     const label = inProgress ? 'Send brevet...' : 'Send brevet';
-    const shuldShowInput = status === 'READY_FOR_INPUT' || inProgress;
+    const shuldShowInput = status === STATUS_READY_FOR_INPUT || inProgress;
     const showVarslingsmetode = isFritekst && shuldShowInput;
-    const isSuccess = status === 'SUBMITTED' && errorMessage === undefined;
+    const isSuccess = status === STATUS_SUBMITTED && errorMessage === undefined;
     return (
         <div>
             <Heading size="large">Journalpost med ID: {id}</Heading>
@@ -136,7 +137,7 @@ function Journalpost() {
                             </BodyShort>
                         </div>
                     </ReadMore>
-                    <RadioGroup onChange={(v) => onChangeVarslingsmetode(v)}
+                    <RadioGroup onChange={(v) => setDistribusjonstype(v)}
                                 disabled={inProgress}
                                 style={{marginTop: '30px'}}
                                 legend="Velg varseltype:" size="medium">
@@ -156,7 +157,7 @@ function Journalpost() {
                         disabled={isSuccess}
                         loading={inProgress}
                         style={{marginTop: '30px'}}>{label}</Button>}
-            {status === 'INITIAL' && errorMessage === undefined &&
+            {status === STATUS_INITIAL && errorMessage === undefined &&
                 <Loader variant="neutral" size="3xlarge" title="venter..."/>}
         </div>
     );
