@@ -1,18 +1,25 @@
 spring:
-    security:
-        oauth2:
-            client:
-                registration:
-                    openam:
-                        client-id: "${OIDC_CLIENT_ID:pensjon-dokdist-localhost}"
-                        client-secret: "${clientSecret}"
-                provider:
-                    openam:
-                        issuer-uri: "${OIDC_ISSUER_URI:https://isso-q.adeo.no:443/isso/oauth2}"
-                        isso-host: "${OIDC_ISSUER_HOST:https://isso-q.adeo.no/isso/oauth2}"
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  security:
+      oauth2:
+          client:
+              registration:
+                  openam:
+                      client-id: "${OIDC_CLIENT_ID:pensjon-dokdist-localhost}"
+                      client-secret: "${clientSecret}"
+              provider:
+                  openam:
+                      issuer-uri: "${OIDC_ISSUER_URI:https://isso-q.adeo.no:443/isso/oauth2}"
+                      isso-host: "${OIDC_ISSUER_HOST:https://isso-q.adeo.no/isso/oauth2}"
 
 distribuer.journalpost.v1.url: "${DISTRIBUER_JOURNALPOST_URL:https://dokdistfordeling.dev.intern.nav.no/rest/v1/distribuerjournalpost}"
 dokarkiv.base.url: "${DOKARKIV_BASE_URL:https://dokarkiv-q2.nais.preprod.local}"
 saf.graphql: "${SAF_GRAPHQL:https://saf-q2.nais.preprod.local/graphql/}"
 sts.url: "${STS_URL:https://security-token-service.nais.preprod.local/rest/v1/sts/token?grant_type=client_credentials&scope=openid}"
 brevmetadata.url: "${BREVMETADATA_URL:https://pensjon-brevmetadata.dev.intern.nav.no}"
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: "/docs"
