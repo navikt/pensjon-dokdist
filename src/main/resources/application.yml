@@ -9,6 +9,7 @@ spring:
                   openam:
                       client-id: "${OIDC_CLIENT_ID:pensjon-dokdist-localhost}"
                       client-secret: "${clientSecret}"
+                      scope: "openid"
               provider:
                   openam:
                       issuer-uri: "${OIDC_ISSUER_URI:https://isso-q.adeo.no:443/isso/oauth2}"
