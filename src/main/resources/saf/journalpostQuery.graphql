@@ -1,7 +1,7 @@
 query ($journalpostId: String!) {
   journalpost(journalpostId: $journalpostId) {
     journalpostId
-    journalforendeEnhet
+    journalfoerendeEnhet
     dokumenter {
       brevkode
     }
