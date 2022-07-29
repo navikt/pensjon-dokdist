@@ -1,0 +1,24 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            scope:
+              - "openid"
+              - "api://dev-gcp.pensjonsbrev.pensjon-dokdist-lokal/.default"
+
+saf:
+  url: "https://saf.dev-fss-pub.nais.io"
+  scope: "api://dev-fss.teamdokumenthandtering.saf/.default"
+
+dokarkiv:
+  url: "https://dokarkiv-q2.dev-fss-pub.nais.io"
+  scope: "api://dev-fss.teamdokumenthandtering.dokarkiv/.default"
+
+distribuer-journalpost:
+  url: "https://dokdistfordeling.dev-fss-pub.nais.io"
+  scope: "api://dev-fss.teamdokumenthandtering.saf/.default"
+
+brevmetadata:
+  url: "https://pensjon-brevmetadata.dev.intern.nav.no"

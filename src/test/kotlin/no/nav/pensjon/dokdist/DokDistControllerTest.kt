@@ -15,11 +15,11 @@ import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.*
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import org.springframework.security.config.web.servlet.invoke
 
 
 @WebMvcTest(properties = ["spring.main.allow-bean-definition-overriding=true"])

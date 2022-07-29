@@ -20,30 +20,26 @@ spec:
     initialDelay: 3
     timeout: 1
   ingresses:
-    - "https://pensjon-dokdist.dev-fss.nais.io"
-  vault:
-    enabled: true
-    paths:
-      - kvPath: "credential/data/dev/oidc-openam-pensjon-dokdist-q2"
-        mountPath: "/secrets/oidc"
-      - kvPath: "serviceuser/data/dev/srvpensjon-dokdist"
-        mountPath: "/secrets/serviceuser"
+    - "https://pensjon-dokdist.dev.intern.nav.no"
+  azure:
+    application:
+      enabled: true
   env:
-    - name: "SECRET_BASEDIR"
-      value: "/"
-    - name: "OIDC_ISSUER_URI"
-      value: "https://isso-q.adeo.no:443/isso/oauth2"
-    - name: "OIDC_CLIENT_ID"
-      value: "pensjon-dokdist-q2"
+    - name: "SPRING_PROFILES_ACTIVE"
+      value: "nais"
     - name: "DISTRIBUER_JOURNALPOST_URL"
-      value: "https://dokdistfordeling.dev.intern.nav.no/rest/v1/distribuerjournalpost"
+      value: "https://dokdistfordeling.dev-fss-pub.nais.io"
+    - name: "DISTRIBUER_JOURNALPOST_SCOPE"
+      value: "api://dev-fss.teamdokumenthandtering.saf/.default"
     - name: "DOKARKIV_BASE_URL"
-      value: "https://dokarkiv.dev.intern.nav.no"
+      value: "https://dokarkiv-q2.dev-fss-pub.nais.io"
+    - name: "DOKARKIV_SCOPE"
+      value: "api://dev-fss.teamdokumenthandtering.dokarkiv/.default"
     - name: "SAF_GRAPHQL"
-      value: "https://saf-q2.nais.preprod.local/graphql"
-    - name: "STS_URL"
-      value: "https://security-token-service.nais.preprod.local/rest/v1/sts/token?grant_type=client_credentials&scope=openid"
-    - name: "OIDC_ISSUER_HOST"
-      value: "https://isso-q.adeo.no/isso/oauth2"
+      value: "https://saf.dev-fss-pub.nais.io"
+    - name: "SAF_GRAPHQL_SCOPE"
+      value: "api://dev-fss.teamdokumenthandtering.saf/.default"
     - name: "BREVMETADATA_URL"
       value: "https://pensjon-brevmetadata.dev.intern.nav.no"
+    - name: "AZURE_APP_OUR_SCOPE"
+      value: "api://dev-gcp.pensjonsbrev.pensjon-dokdist/.default"

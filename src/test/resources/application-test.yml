@@ -1,0 +1,33 @@
+# Profile for tests that load entire context, and thus have security configuration that require the following.
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            clientId: "client-id-TEST"
+            client-secret: "client-secret-TEST"
+            authorization-grant-type: authorization_code
+            scope:
+              - "openid"
+              - "our-azure-ad-scope-TEST"
+            redirect-uri: "http://localhost:8080/login/oauth2/code/azure"
+        provider:
+          azure:
+            token-uri: "http://azure.local/token-uri-TEST"
+            authorization-uri:  "http://localhost:8080/login/oauth2/code/azure"
+
+saf:
+  url: "http://saf.local-test"
+  scope: "api://saf.local.test/.default"
+
+dokarkiv:
+  url: "http://dokarkiv.local-test"
+  scope: "api://dokarkiv.local.test/.default"
+
+distribuer-journalpost:
+  url: "http://dokdistfordeling.local-test"
+  scope: "api://dokdistfordeling.local.test/.default"
+
+brevmetadata:
+  url: "http://brevmetadata.local-test"

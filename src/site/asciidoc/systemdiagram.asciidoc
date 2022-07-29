@@ -4,6 +4,10 @@ Applikasjonsdiagrammet viser hvilke andre systemer systemet snakker med.
 
 image::pensjon-dokdist.png[pensjon-dokdist,png]
 
+NOTE: STS og on-premise servicebruker er erstattet med AzureAD. Spring Security sørger for login-flow
+og utveksler access-token mot on-behalf-of token til SAF, Dokarkiv og DistribuerJournalpost.
+
+NOTE: Har ikke tilgang til kilden for bildet over, så det er ikke oppdatert med Brevmetadata og AzureAD.
 
 |===
 |Steg |Input |Output |Beskrivelse
@@ -23,17 +27,26 @@ Lenken leder til pensjon-dokdist.
 Pensjon-dokdist -> SAF
 |journalpostId
 |journalfoerendEnhet
-|Kall mot GraphiQL-tjeneste SAF og hente journalfoerendEnhet som trenges for å ferdigstille journalpost.
 
-|3
+dokumenter[].brevkode
 
-Pensjon-dokdist -> STS
+|Kall mot GraphQL-tjeneste SAF og hente journalfoerendEnhet og brevkode som trenges for å ferdigstille journalpost.
+
+|[line-through]#3#
+
+[line-through]#Pensjon-dokdist -> STS#
 |
-|serviceBrukerToken
-|Kall mot Rest-tjeneste STS og hente serviceBrukerToken som trenges for å ferdigstille journalpost.
+|[line-through]#serviceBrukerToken#
+|[line-through]#Kall mot Rest-tjeneste STS og hente serviceBrukerToken som trenges for å ferdigstille journalpost.#
 
 |4
 
+Pensjon-dokdist -> Brevmetadata
+|brevkode
+|dokumentkategori
+|Om brevet ikke er fritekst (hvor saksbehandler selv velger), så utledes distribusjonstype ut fra dokumentkategori.
+
+|5
 Pensjon-dokdist -> Dokarkiv
 |journalpostId
 
@@ -41,18 +54,19 @@ journalfoerendEnhet
 |
 |Kall mot Rest-tjeneste Dokarkiv og ferdigstille journalpost. Status til journalpost blir satt til 'FS'.
 
-|5
+|6
 
 Pensjon-dokdist -> DistribuerJournalpost
 |journalpostId
-
-batchId (nullable)
 
 bestillendeFagsystem
 
 dokumentProdApp
 
-adresse (nullable)
+distribusjonstype
+
+distribusjonstidspunkt
+
 |bestillingsId
 |Kall mot Rest-tjeneste DistribuerJournalpost. Det blir sendte tilbake en bestillingsId hvis brev er distribuert.
 Forusetningen er at journalpost har status 'FS'

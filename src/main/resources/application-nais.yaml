@@ -1,0 +1,17 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          azure:
+            clientId: "${AZURE_APP_CLIENT_ID}"
+            client-secret: "${AZURE_APP_CLIENT_SECRET}"
+            authorization-grant-type: authorization_code
+            scope:
+              - "openid"
+              - "${AZURE_APP_OUR_SCOPE}"
+        provider:
+          azure:
+            token-uri: "${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}"
+            issuer-uri: "${AZURE_OPENID_CONFIG_ISSUER}"
+            jwk-set-uri: "${AZURE_OPENID_CONFIG_JWKS_URI}"

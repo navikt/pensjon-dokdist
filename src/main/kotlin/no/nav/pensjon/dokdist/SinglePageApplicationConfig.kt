@@ -16,6 +16,7 @@ class StaticContentConfig : WebMvcConfigurer {
     // Add resource handler for everything except /api
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry.addResourceHandler("{_:^(?!api).*$}").addResourceLocations("classpath:/static/")
+        registry.addResourceHandler("/site/**").addResourceLocations("classpath:/static/site/")
     }
 }
 

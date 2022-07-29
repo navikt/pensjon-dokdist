@@ -13,21 +13,17 @@ Se swagger dokumentasjon:  https://pensjon-dokdist.dev-fss.nais.io/swagger-ui.ht
 |Ja
 |Journalpost som skal distribueres
 
-|address
-|
-|Nei
-|Struktur for å beskrive postadresse
-
 |status
 |String
 |Ja
 |Status på journalposten, f.eks. FL eller FS.
+
+|distribusjonstype
+|Enum: VEDTAK, VIKTIG, ANNET
+|Nei
+|Kreves ved distribusjon av fritekst-brev, ellers ignoreres den.
+
 |===
 
 === Output
-Det er ingen output. BestillingsId samt journalpostId logges i Kibana. f.eks:
-
-[source]
---
-Journalpost: 453503145 bestillingsId: d573af97-b847-4d95-a02a-08de3fbcdc83
---
+BestillingsId

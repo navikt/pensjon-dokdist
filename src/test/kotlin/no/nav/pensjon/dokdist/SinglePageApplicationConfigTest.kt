@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,12 +20,13 @@ private const val INDEX_JS_CONTENT = "var x = \"\""
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    properties = ["spring.main.allow-bean-definition-overriding=true"]
+    properties = ["spring.main.allow-bean-definition-overriding=true"],
 )
 @Import(value = [
     SinglePageApplicationConfigTest.DisableSecurityConfig::class,
     SinglePageApplicationConfigTest.TestController::class,
 ])
+@ActiveProfiles("test")
 class SinglePageApplicationConfigTest(
     @LocalServerPort private val port: Int,
     @Autowired private val restTemplate: TestRestTemplate,
