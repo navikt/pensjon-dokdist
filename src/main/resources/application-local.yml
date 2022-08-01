@@ -9,7 +9,7 @@ spring:
               - "api://dev-gcp.pensjonsbrev.pensjon-dokdist-lokal/.default"
 
 saf:
-  url: "https://saf.dev-fss-pub.nais.io"
+  url: "https://saf-q2.dev-fss-pub.nais.io"
   scope: "api://dev-fss.teamdokumenthandtering.saf/.default"
 
 dokarkiv:

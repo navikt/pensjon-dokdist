@@ -36,7 +36,7 @@ spec:
     - name: "DOKARKIV_SCOPE"
       value: "api://dev-fss.teamdokumenthandtering.dokarkiv/.default"
     - name: "SAF_GRAPHQL"
-      value: "https://saf.dev-fss-pub.nais.io"
+      value: "https://saf-q2.dev-fss-pub.nais.io"
     - name: "SAF_GRAPHQL_SCOPE"
       value: "api://dev-fss.teamdokumenthandtering.saf/.default"
     - name: "BREVMETADATA_URL"
