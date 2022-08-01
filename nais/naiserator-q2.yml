@@ -13,12 +13,14 @@ spec:
     max: 1
   liveness:
     path: "/api/internal/isAlive"
-    initialDelay: 3
-    timeout: 1
+    port: 8080
+    initialDelay: 20
+    timeout: 60
   readiness:
     path: "/api/internal/isReady"
-    initialDelay: 3
-    timeout: 1
+    port: 8080
+    initialDelay: 20
+    timeout: 60
   ingresses:
     - "https://pensjon-dokdist.dev.intern.nav.no"
   azure:
