@@ -9,7 +9,7 @@ spring:
             authorization-grant-type: authorization_code
             scope:
               - "openid"
-              - "api://${NAIS_CLIENT_ID}/.default"
+              - "${AZURE_APP_OUR_SCOPE}"
         provider:
           azure:
             token-uri: "${AZURE_OPENID_CONFIG_TOKEN_ENDPOINT}"

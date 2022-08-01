@@ -45,3 +45,5 @@ spec:
       value: "api://prod-fss.teamdokumenthandtering.saf/.default"
     - name: "BREVMETADATA_URL"
       value: "https://pensjon-brevmetadata.intern.nav.no"
+    - name: "AZURE_APP_OUR_SCOPE"
+      value: "api://prod-gcp.pensjonsbrev.pensjon-dokdist/.default"
