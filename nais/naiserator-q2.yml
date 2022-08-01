@@ -24,6 +24,8 @@ spec:
   azure:
     application:
       enabled: true
+      replyURLs:
+        - "https://pensjon-dokdist.dev.intern.nav.no/login/oauth2/code/azure"
   env:
     - name: "SPRING_PROFILES_ACTIVE"
       value: "nais"
