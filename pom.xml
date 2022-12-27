@@ -5,7 +5,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.7.2</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>no.nav</groupId>
 	<artifactId>pensjon-dokdist</artifactId>
@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>17</java.version>
 		<kotlin.version>1.7.10</kotlin.version>
-		<httpclient.version>4.5.13</httpclient.version>
+		<httpclient.version>4.5.14</httpclient.version>
 		<assertj.version>3.23.1</assertj.version>
 		<log4j2.version>2.17.0</log4j2.version>
 		<springfox.version>3.0.0</springfox.version>
