@@ -32,13 +32,18 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
         headers: {
             'Content-type': "application/json"
         },
+        redirect: "error",
         body: JSON.stringify({
             journalpostId: id,
             status,
             distribusjonstype
         })
-    });
-    if (response.status !== 200) {
+    }).catch(() => window.location.reload());
+
+    if(response.status === 401 || response.status === 403) {
+        await fetch("/logout")
+        window.location.reload()
+    } else if (response.status !== 200) {
         setStatus(STATUS_SUBMITTED)
         const body = await response.json()
         setErrorMessage("Feil ved distribuering journalpost. Melding: " + body.message)
@@ -53,9 +58,14 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
     const response = await fetch(`/api/journalpost/${id}`, {
         method: 'GET',
         credentials: 'same-origin',
-    })
+        redirect: "error",
+    }).catch(() => window.location.reload());
+
     const body = await response.json()
-    if (response.status !== 200) {
+    if(response.status === 401 || response.status === 403) {
+        await fetch("/logout")
+        window.location.reload()
+    } else if (response.status !== 200) {
         setErrorMessage("Feil ved henting av journalpostinfo. Melding: " + body.message)
     } else {
         setStatus(STATUS_READY_FOR_INPUT)
