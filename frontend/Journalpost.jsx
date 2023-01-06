@@ -26,6 +26,10 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
     console.log('distribuer', id);
     console.log('status', status);
     setStatus(STATUS_SUBMITTING)
+
+    // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
+    // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
+    // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
     const response = await fetch(`/api/journalpost/${id}/send`, {
         method: 'POST',
         credentials: 'same-origin',
@@ -40,7 +44,8 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
         })
     }).catch(() => window.location.reload());
 
-    if(response.status === 401 || response.status === 403) {
+    // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
+    if(response.status === 401) {
         await fetch("/logout")
         window.location.reload()
     } else if (response.status !== 200) {
@@ -55,6 +60,10 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
 
 async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst) {
     console.log('henter journalpostinfo for journalpost', id);
+
+    // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
+    // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
+    // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
     const response = await fetch(`/api/journalpost/${id}`, {
         method: 'GET',
         credentials: 'same-origin',
@@ -62,7 +71,8 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
     }).catch(() => window.location.reload());
 
     const body = await response.json()
-    if(response.status === 401 || response.status === 403) {
+    // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
+    if(response.status === 401) {
         await fetch("/logout")
         window.location.reload()
     } else if (response.status !== 200) {

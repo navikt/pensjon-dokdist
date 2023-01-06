@@ -9,8 +9,10 @@ import org.springframework.http.*
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.client.*
 
+@ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "Could not exchange OBO-accessToken")
 class OnBehalfOfException(message: String?, cause: Throwable? = null) : Exception(message, cause)
 data class OnBehalfOfTokenResponse(
     @JsonProperty("token_type") val tokenType: String,
