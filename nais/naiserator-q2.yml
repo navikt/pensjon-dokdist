@@ -23,6 +23,7 @@ spec:
     timeout: 60
   ingresses:
     - "https://pensjon-dokdist.dev.intern.nav.no"
+    - "https://pensjon-dokdist.intern.dev.nav.no"
   azure:
     application:
       enabled: true
