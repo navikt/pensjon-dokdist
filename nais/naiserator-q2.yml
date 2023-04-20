@@ -36,7 +36,7 @@ spec:
         - host: dokdistfordeling.dev-fss-pub.nais.io
         - host: dokarkiv-q2.dev-fss-pub.nais.io
         - host: saf-q2.dev-fss-pub.nais.io
-        - host: pensjon-brevmetadata.intern.dev.nav.no
+        - host: pensjon-brevmetadata-q2.intern.dev.nav.no
   env:
     - name: "SPRING_PROFILES_ACTIVE"
       value: "nais"
@@ -53,6 +53,6 @@ spec:
     - name: "SAF_GRAPHQL_SCOPE"
       value: "api://dev-fss.teamdokumenthandtering.saf/.default"
     - name: "BREVMETADATA_URL"
-      value: "https://pensjon-brevmetadata.intern.dev.nav.no"
+      value: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
     - name: "AZURE_APP_OUR_SCOPE"
       value: "api://dev-gcp.pensjonsbrev.pensjon-dokdist/.default"

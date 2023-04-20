@@ -21,4 +21,4 @@ distribuer-journalpost:
   scope: "api://dev-fss.teamdokumenthandtering.saf/.default"
 
 brevmetadata:
-  url: "https://pensjon-brevmetadata.dev.intern.nav.no"
+  url: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
