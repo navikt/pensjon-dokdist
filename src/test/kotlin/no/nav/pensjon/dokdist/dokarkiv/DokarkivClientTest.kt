@@ -55,7 +55,7 @@ class DokarkivClientTest {
         val exception = assertThrows<ResponseStatusException> {
             dokarkiv.ferdigstillJournalpost(journalpostId, journalfoerendeEnhet)
         }
-        assertThat(exception).matches { it.status == HttpStatus.FORBIDDEN }.hasMessageContaining("Ikke tilgang til")
+        assertThat(exception).matches { it.statusCode == HttpStatus.FORBIDDEN }.hasMessageContaining("Ikke tilgang til")
 
         mockServer.verify()
     }

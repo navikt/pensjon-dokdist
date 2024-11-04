@@ -1,26 +1,25 @@
 package no.nav.pensjon.dokdist
 
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.configuration.*
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.config.web.servlet.invoke
 
+@Configuration
 @EnableWebSecurity
+@Order(2)
 class WebSecurityConfig {
 
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        http {
-            authorizeRequests {
-                authorize("/api/internal/isAlive", permitAll)
-                authorize("/api/internal/isReady", permitAll)
-                authorize(anyRequest, authenticated)
-            }
-            oauth2Login { }
-            csrf { disable() }
-            cors { }
-        }
-        return http.build()
+    fun filterChain(http: HttpSecurity): SecurityFilterChain = http.authorizeHttpRequests { req ->
+        req.requestMatchers("/api/internal/isAlive").permitAll()
+        req.requestMatchers("/api/internal/isReady").permitAll()
+        req.anyRequest().authenticated()
     }
+        .oauth2Login { }
+        .csrf { it.disable() }
+        .cors { }
+        .build()
 }

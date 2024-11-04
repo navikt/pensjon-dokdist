@@ -9,7 +9,7 @@ import org.springframework.web.servlet.NoHandlerFoundException
 import org.springframework.web.servlet.config.annotation.*
 import java.io.IOException
 import java.nio.charset.Charset
-import javax.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequest
 
 @Configuration
 class StaticContentConfig : WebMvcConfigurer {

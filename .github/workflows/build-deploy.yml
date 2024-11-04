@@ -4,73 +4,80 @@ on:
   push:
   workflow_dispatch:
 
-env:
-  IMAGE: ghcr.io/${{ github.repository }}/pensjon-dokdist:${{ github.sha }}
-
 jobs:
 
   build:
     name: Build and push Docker container
     permissions:
-      contents: "read"
-      checks: "write"
-      id-token: "write"
-      packages: "write"
+      contents: read
+      checks: write
+      id-token: write
+      packages: write
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Build frontend assets
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: 12.x
       - run: npm ci
       - run: npm run build
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
+          distribution: 'temurin'
       - name: Set up cache
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
       - name: Build with Maven
-        run: mvn clean install
-      - name: Build and publish Docker image
+        run: mvn package
+      - name: "Build and publish container image"
+        uses: nais/docker-build-push@v0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          docker build --tag ${IMAGE} .
-          docker login ghcr.io -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
-          docker push ${IMAGE}
+          TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
+        id: docker-build-push
+        with:
+          team: pensjonsbrev
+          image_suffix: pensjon-dokdist
+          push_image: true
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
 
   deploy-q2:
     name: Deploy to q2
     permissions:
-      contents: "read"
-      id-token: "write" 
+      contents: read
+      id-token: write
     needs: build
     if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
           RESOURCE: nais/naiserator-q2.yml
+          VAR: image=${{ needs.build.outputs.image }}
+
 
   deploy-prod:
     name: Deploy to prod
     permissions:
-      contents: "read"
-      id-token: "write" 
+      contents: read
+      id-token: write
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
           RESOURCE: nais/naiserator-prod.yml
+          VAR: image=${{ needs.build.outputs.image }}

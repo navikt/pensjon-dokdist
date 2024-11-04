@@ -21,6 +21,14 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 60
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
   ingresses:
     - "https://pensjon-dokdist.intern.nav.no"
   azure:

@@ -82,7 +82,7 @@ class SafClientTest {
             .andRespond(withStatus(HttpStatus.FORBIDDEN))
 
         val exception = assertThrows<ResponseStatusException> { saf.fetchJournal(journalpost.journalpostId) }
-        assertThat(exception).matches { it.status == HttpStatus.FORBIDDEN }
+        assertThat(exception).matches { it.statusCode == HttpStatus.FORBIDDEN }
         mockServer.verify()
     }
 
