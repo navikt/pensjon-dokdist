@@ -14,7 +14,7 @@ interface DokarkivService {
 }
 
 @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Klarte ikke å ferdigstille journalpost")
-class DokarkivException(message: String?, cause: Throwable? = null) : Exception(message, cause)
+class DokarkivException(message: String?, cause: Throwable? = null) : RuntimeException(message, cause)
 
 private data class FerdigstillJournalpostRequest(val journalfoerendeEnhet: String)
 

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.client.*
 
 @ResponseStatus(code = HttpStatus.UNAUTHORIZED, reason = "Could not exchange OBO-accessToken")
-class OnBehalfOfException(message: String?, cause: Throwable? = null) : Exception(message, cause)
+class OnBehalfOfException(message: String?, cause: Throwable? = null) : RuntimeException(message, cause)
 data class OnBehalfOfTokenResponse(
     @JsonProperty("token_type") val tokenType: String,
     @JsonProperty("scope") val scope: String,

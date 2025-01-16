@@ -23,7 +23,7 @@ interface SafService {
 }
 
 @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR, reason = "Feilet å hente journalpost i SAF")
-class SafException(message: String?, cause: Throwable? = null) : Exception(message, cause)
+class SafException(message: String?, cause: Throwable? = null) : RuntimeException(message, cause)
 
 private data class FetchJournalVariables(val journalpostId: String)
 private data class FetchJournalData(val journalpost: Journalpost?)

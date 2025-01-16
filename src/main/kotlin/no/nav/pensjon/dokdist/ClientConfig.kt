@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.client.*
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
 import org.springframework.web.context.annotation.RequestScope
 
-class AuthorizationError(message: String) : Exception(message)
+class AuthorizationError(message: String) : RuntimeException(message)
 
 @Configuration
 class ClientConfig {

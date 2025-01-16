@@ -14,7 +14,7 @@ const val FRITEKST_BREV_KODE = "PE_IY_05_300"
 const val FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS = "FS"
 const val FERDIG_OG_KLAR_LOKAL_PRINT_STATUS = "FL"
 
-class DokDistException(message: String, cause: Throwable? = null) : Exception(message, cause)
+class DokDistException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 data class JournalpostResponse(val journalpostId: String, val fritekst: Boolean)
 data class DistribuerRequest(val status: String, val distribusjonstype: Distribusjonstype?)
