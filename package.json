@@ -11,8 +11,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.26.0",
-    "@babel/preset-env": "^7.26.0",
+    "@babel/core": "^7.26.7",
+    "@babel/preset-env": "^7.26.7",
     "@babel/preset-react": "^7.26.3",
     "babel-loader": "^9.2.1",
     "babel-plugin-react": "^1.0.0",
@@ -20,7 +20,7 @@
     "express": "^4.21.2",
     "graceful-fs": "^4.2.11",
     "html-webpack-plugin": "^5.6.3",
-    "less": "^4.2.1",
+    "less": "^4.2.2",
     "less-loader": "^12.2.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.97.1",
@@ -29,17 +29,17 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "@navikt/ds-css": "^7.9.0",
-    "@navikt/ds-react": "^7.9.0",
+    "@navikt/ds-css": "^7.10.0",
+    "@navikt/ds-react": "^7.10.0",
     "@navikt/fnrvalidator": "^2.1.5",
     "classnames": "^2.5.1",
-    "core-js": "^3.39.0",
+    "core-js": "^3.40.0",
     "lodash.throttle": "^4.1.1",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^7.1.1",
-    "react-router-dom": "^7.1.1",
+    "react-router": "^7.1.5",
+    "react-router-dom": "^7.1.5",
     "whatwg-fetch": "^3.6.20"
   }
 }
