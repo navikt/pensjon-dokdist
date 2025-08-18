@@ -18,7 +18,7 @@ dokarkiv:
 
 distribuer-journalpost:
   url: "https://dokdistfordeling.dev-fss-pub.nais.io"
-  scope: "api://dev-fss.teamdokumenthandtering.saf/.default"
+  scope: "api://dev-fss.teamdokumenthandtering.dokdistfordeling/.default"
 
 brevmetadata:
   url: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"

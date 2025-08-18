@@ -50,7 +50,7 @@ spec:
     - name: "DISTRIBUER_JOURNALPOST_URL"
       value: "https://dokdistfordeling.prod-fss-pub.nais.io"
     - name: "DISTRIBUER_JOURNALPOST_SCOPE"
-      value: "api://prod-fss.teamdokumenthandtering.saf/.default"
+      value: "api://prod-fss.teamdokumenthandtering.dokdistfordeling/.default"
     - name: "DOKARKIV_BASE_URL"
       value: "https://dokarkiv.prod-fss-pub.nais.io"
     - name: "DOKARKIV_SCOPE"
