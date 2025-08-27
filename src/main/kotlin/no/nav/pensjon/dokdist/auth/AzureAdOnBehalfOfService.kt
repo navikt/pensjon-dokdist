@@ -60,6 +60,12 @@ class AzureAdOnBehalfOfService(
                 "Got 404 when trying to exchange token using endpoint $endpoint"
             )
             throw OnBehalfOfException("Unable to exchange token, wrong URL", e)
+        }  else if (e.statusCode == HttpStatus.BAD_REQUEST) {
+            logger.warn(
+                RawJsonAppendingMarker("error_response", e.responseBodyAsString),
+                "Bad request error for scope=${scope.joinToString(" ")}, typically solvable by refresh, message=${e.message}"
+            )
+            throw OnBehalfOfException("Unable to exchange token", e)
         } else {
             logger.error(
                 RawJsonAppendingMarker("error_response", e.responseBodyAsString),
