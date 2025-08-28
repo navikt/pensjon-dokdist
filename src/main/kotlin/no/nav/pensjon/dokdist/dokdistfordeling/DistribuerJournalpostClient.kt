@@ -18,7 +18,7 @@ data class DistribueringInternalResponse(
     val status: Status
 )
 
-enum class Status { CONFLICT, OK }
+enum class Status { CONFLICT, MOTTAKER_DOED, OK }
 
 interface DistribuerJournalpostService {
     fun distribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribueringInternalResponse
@@ -50,6 +50,10 @@ class DistribuerJournalpostClient(
                 HttpStatus.CONFLICT -> {
                     logger.warn("$journalpostId er allerede distribuert.")
                     return DistribueringInternalResponse(null, Status.CONFLICT)
+                }
+                HttpStatus.GONE -> {
+                    logger.warn("Mottaker av $journalpostId er død, så journalposten kan ikke distribueres.")
+                    return DistribueringInternalResponse(null, Status.MOTTAKER_DOED)
                 }
                 else -> {
                     val msg = "Kunne ikke distribuere journalpost $journalpostId (4xx): ${e.responseBodyAsString}"

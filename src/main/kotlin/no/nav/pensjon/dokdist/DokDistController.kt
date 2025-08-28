@@ -50,6 +50,7 @@ class DokDistController(
                     ResponseEntity.ok(response.originalResponse)
                 }
                 Status.CONFLICT -> ResponseEntity.noContent().build()
+                Status.MOTTAKER_DOED -> ResponseEntity.noContent().build()
                 else -> throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Fikk tom bestillingsId fra dokdistfordeling")
             }
         }
