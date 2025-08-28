@@ -44,11 +44,13 @@ class DokDistController(
         if (readyToDistribute(journalpostId, journalfoerendeEnhet, request.status)) {
             val response = distribuerJournalpost.distribuer(journalpostId, distribusjonstype)
 
-            return if (response.bestillingsId.isNotBlank()) {
-                logger.info("Journalpost $journalpostId er distribuert med bestillingsId ${response.bestillingsId}")
-                ResponseEntity.ok(response)
-            } else {
-                throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Fikk tom bestillingsId fra dokdistfordeling")
+            return when (response.status) {
+                Status.OK if response.originalResponse!!.bestillingsId.isNotBlank() -> {
+                    logger.info("Journalpost $journalpostId er distribuert med bestillingsId ${response.originalResponse.bestillingsId}")
+                    ResponseEntity.ok(response.originalResponse)
+                }
+                Status.CONFLICT -> ResponseEntity.noContent().build()
+                else -> throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Fikk tom bestillingsId fra dokdistfordeling")
             }
         }
 

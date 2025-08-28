@@ -42,7 +42,7 @@ class DistribuerJournalpostClientTest {
             .andExpect(content().json(objectMapper.writeValueAsString(expectedRequest)))
             .andRespond(withSuccess(responseJson, MediaType.APPLICATION_JSON))
 
-        assertThat(distribuer.distribuer(journalpostId, expectedRequest.distribusjonstype)).isEqualTo(response)
+        assertThat(distribuer.distribuer(journalpostId, expectedRequest.distribusjonstype).originalResponse).isEqualTo(response)
         mockServer.verify()
     }
 

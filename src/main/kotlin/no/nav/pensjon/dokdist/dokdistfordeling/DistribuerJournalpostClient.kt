@@ -13,8 +13,15 @@ import org.springframework.web.client.exchange
 
 const val BESTILLENDE_FAGSYSTEM = "AT05"
 
+data class DistribueringInternalResponse(
+    val originalResponse: DistribuerJournalpostResponse?,
+    val status: Status
+)
+
+enum class Status { CONFLICT, OK }
+
 interface DistribuerJournalpostService {
-    fun distribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribuerJournalpostResponse
+    fun distribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribueringInternalResponse
 }
 
 class DistribuerJournalpostClient(
@@ -23,7 +30,7 @@ class DistribuerJournalpostClient(
     restTemplateBuilder: RestTemplateBuilder = RestTemplateBuilder(),
 ) : AzureAdOBOApiBinding(accessToken, restTemplateBuilder), DistribuerJournalpostService {
 
-    override fun distribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribuerJournalpostResponse {
+    override fun distribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribueringInternalResponse {
         val response = try {
             restTemplate.exchange<DistribuerJournalpostResponse>(
                 "$url/rest/v1/distribuerjournalpost",
@@ -39,9 +46,17 @@ class DistribuerJournalpostClient(
                 )
             )
         } catch (e: HttpClientErrorException) {
-            val msg = "Kunne ikke distribuere journalpost $journalpostId (4xx): ${e.responseBodyAsString}"
-            logger.error(msg, e)
-            throw DokDistException(msg, e)
+            when (e.statusCode) {
+                HttpStatus.CONFLICT -> {
+                    logger.warn("$journalpostId er allerede distribuert.")
+                    return DistribueringInternalResponse(null, Status.CONFLICT)
+                }
+                else -> {
+                    val msg = "Kunne ikke distribuere journalpost $journalpostId (4xx): ${e.responseBodyAsString}"
+                    logger.error(msg, e)
+                    throw DokDistException(msg, e)
+                }
+            }
         } catch (e: HttpServerErrorException) {
             val msg = "Kunne ikke distribuere journalpost $journalpostId (5xx): ${e.responseBodyAsString}"
             logger.error(msg, e)
@@ -52,7 +67,7 @@ class DistribuerJournalpostClient(
             throw DokDistException(msg, e)
         }
 
-        return response.body ?: throw DokDistException("Fikk tomt svar fra distribuerjournalpost for journalpost: $journalpostId")
+        return DistribueringInternalResponse(response.body ?: throw DokDistException("Fikk tomt svar fra distribuerjournalpost for journalpost: $journalpostId"), Status.OK)
     }
 
     companion object {

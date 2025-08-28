@@ -99,7 +99,7 @@ class DokDistControllerTest(
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
         every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
         every { distribuerJournalpost.distribuer(journalpost.journalpostId, brevdata.dokumentkategori.toDistribusjonstype()) }
-            .returns(DistribuerJournalpostResponse("9911"))
+            .returns(DistribueringInternalResponse(DistribuerJournalpostResponse("9911"), Status.OK))
 
         mockMvc.perform(
             post("/api/journalpost/${journalpost.journalpostId}/send")
@@ -117,7 +117,7 @@ class DokDistControllerTest(
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost.copy(dokumenter = listOf(Journalpost.Dokument(FRITEKST_BREV_KODE)))
         every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
         every { distribuerJournalpost.distribuer(journalpost.journalpostId, Distribusjonstype.ANNET) }
-            .returns(DistribuerJournalpostResponse("9911"))
+            .returns(DistribueringInternalResponse(DistribuerJournalpostResponse("9911"), Status.OK))
 
         mockMvc.perform(
             post("/api/journalpost/${journalpost.journalpostId}/send")
@@ -137,7 +137,7 @@ class DokDistControllerTest(
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost.copy(dokumenter = listOf(Journalpost.Dokument(FRITEKST_BREV_KODE)))
         every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
         every { distribuerJournalpost.distribuer(journalpost.journalpostId, Distribusjonstype.ANNET) }
-            .returns(DistribuerJournalpostResponse("9911"))
+            .returns(DistribueringInternalResponse(DistribuerJournalpostResponse("9911"), Status.OK))
 
         mockMvc.perform(
             post("/api/journalpost/${journalpost.journalpostId}/send")
@@ -155,7 +155,7 @@ class DokDistControllerTest(
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
         every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
         every { distribuerJournalpost.distribuer(journalpost.journalpostId, brevdata.dokumentkategori.toDistribusjonstype()) }
-            .returns(DistribuerJournalpostResponse("9911"))
+            .returns(DistribueringInternalResponse(DistribuerJournalpostResponse("9911"), Status.OK))
         justRun { dokarkiv.ferdigstillJournalpost(journalpost.journalpostId, journalpost.journalfoerendeEnhet!!) }
 
         mockMvc.perform(
@@ -176,7 +176,7 @@ class DokDistControllerTest(
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
         every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
         every { distribuerJournalpost.distribuer(journalpost.journalpostId, brevdata.dokumentkategori.toDistribusjonstype()) }
-            .returns(DistribuerJournalpostResponse("9911"))
+            .returns(DistribueringInternalResponse(DistribuerJournalpostResponse("9911"), Status.OK))
 
         mockMvc.perform(
             post("/api/journalpost/${journalpost.journalpostId}/send")

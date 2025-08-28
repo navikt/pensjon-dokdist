@@ -48,7 +48,7 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
     if(response.status === 401) {
         await fetch("/logout")
         window.location.reload()
-    } else if (response.status !== 200) {
+    } else if (response.status !== 200 && response.status !== 204) {
         setStatus(STATUS_SUBMITTED)
         const body = await response.json()
         setErrorMessage("Feil ved distribuering journalpost. Melding: " + body.message)
