@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.*
 import org.springframework.boot.test.web.server.LocalServerPort
@@ -15,11 +16,15 @@ import org.springframework.test.context.ActiveProfiles
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class WebSecurityConfigTest(
-    @LocalServerPort private val port: Int,
-    @Autowired private val restTemplate: TestRestTemplate,
+    @param:LocalServerPort private val port: Int,
+    @param:Autowired private var restTemplate: TestRestTemplate,
 ) {
     private val baseUrl = "http://localhost:$port"
     private val authRedirectUrl = "$baseUrl/oauth2/authorization/azure"
+
+    init {
+        restTemplate = restTemplate.withRedirects(ClientHttpRequestFactorySettings.Redirects.DONT_FOLLOW)
+    }
 
     @Test
     fun nonProtectedResponds() {
