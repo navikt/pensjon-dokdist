@@ -21,8 +21,8 @@ For å kunne kjøre backend lokalt må man først kjøre `/fetch-secrets.sh` for
   Alle kall mot `http://localhost:8080/api/` er satt opp som proxy som treffer mock-backenden.
   
 ### Dokumentasjon via Swagger
-- Api dokumentajon: `https://pensjon-dokdist.intern.dev.nav.no/swagger-ui.html`
+- Api dokumentajon: `https://pensjon-dokdist.dev-fss.nais.io/swagger-ui.html`
 
 ### Dokumentasjon
-`https://navikt.github.io/pensjon-dokdist`
+`https://pensjon-dokdist.dev-fss.nais.io/site/pensjon-dokdist.html`
   

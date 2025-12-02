@@ -1,6 +1,6 @@
 package no.nav.pensjon.dokdist.auth
 
-import org.springframework.boot.restclient.RestTemplateBuilder
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.http.*
 import org.springframework.http.client.*
 import org.springframework.web.client.RestTemplate

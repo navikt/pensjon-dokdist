@@ -3,11 +3,8 @@ package no.nav.pensjon.dokdist
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.resttestclient.TestRestTemplate
-import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
-import org.springframework.boot.resttestclient.getForEntity
-import org.springframework.boot.resttestclient.getForObject
 import org.springframework.boot.test.context.*
+import org.springframework.boot.test.web.client.*
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.context.annotation.*
 import org.springframework.http.HttpStatus
@@ -30,7 +27,6 @@ private const val INDEX_JS_CONTENT = "var x = \"\""
     SinglePageApplicationConfigTest.TestController::class,
 ])
 @ActiveProfiles("test")
-@AutoConfigureTestRestTemplate
 class SinglePageApplicationConfigTest(
     @LocalServerPort private val port: Int,
     @Autowired private val restTemplate: TestRestTemplate,

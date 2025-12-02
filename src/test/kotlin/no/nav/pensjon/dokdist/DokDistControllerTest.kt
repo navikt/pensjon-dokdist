@@ -8,18 +8,22 @@ import no.nav.pensjon.dokdist.dokarkiv.DokarkivService
 import no.nav.pensjon.dokdist.dokdistfordeling.*
 import no.nav.pensjon.dokdist.dokdistfordeling.DistribuerJournalpostRequest.Distribusjonstype
 import no.nav.pensjon.dokdist.saf.*
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.context.annotation.*
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 
 @WebMvcTest(properties = ["spring.main.allow-bean-definition-overriding=true"])
-@AutoConfigureMockMvc
+@Import(DokDistControllerTest.DisableSecurityConfig::class)
 class DokDistControllerTest(
     @Autowired private val mockMvc: MockMvc,
 ) {
@@ -37,6 +41,16 @@ class DokDistControllerTest(
 
     private val brevkode = "1234"
     private val journalpost = Journalpost("1234", "en-kul-enhet", listOf(Journalpost.Dokument("1234")))
+
+    @TestConfiguration
+    @Order(1)
+    class DisableSecurityConfig {
+        @Bean
+        fun filterChain(http: HttpSecurity): SecurityFilterChain =
+            http
+                .csrf { it.disable() }
+                .build()
+    }
 
     @Test
     fun `getJournalpost responds for non fritekst-brev`() {

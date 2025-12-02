@@ -1,10 +1,11 @@
 package no.nav.pensjon.dokdist
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.slf4j.LoggerFactory
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.util.StreamUtils
-import tools.jackson.databind.json.JsonMapper
 import java.io.File
 import java.nio.charset.StandardCharsets
 
@@ -42,7 +43,7 @@ private fun ifRunningLocallySetupSecrets(activeProfiles: List<String>) {
             }
         }
 
-        JsonMapper().readerFor(Map::class.java).readValue<Map<String, String>>(azureAdJson).also {
+        ObjectMapper().readValue<Map<String, String>>(azureAdJson).also {
             setSystemProperty("spring.security.oauth2.client.registration.azure.clientId", it["AZURE_APP_CLIENT_ID"])
             setSystemProperty("spring.security.oauth2.client.registration.azure.client-secret", it["AZURE_APP_CLIENT_SECRET"])
             setSystemProperty("spring.security.oauth2.client.provider.azure.token-uri", it["AZURE_OPENID_CONFIG_TOKEN_ENDPOINT"])

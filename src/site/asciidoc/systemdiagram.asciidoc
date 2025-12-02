@@ -71,4 +71,5 @@ distribusjonstidspunkt
 |Kall mot Rest-tjeneste DistribuerJournalpost. Det blir sendte tilbake en bestillingsId hvis brev er distribuert.
 Forusetningen er at journalpost har status 'FS'
 
+|6
 |===

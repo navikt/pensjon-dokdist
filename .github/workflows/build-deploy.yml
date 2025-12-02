@@ -15,7 +15,6 @@ jobs:
       packages: write
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      digest: ${{ steps.docker-build-push.outputs.digest }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -40,12 +39,14 @@ jobs:
         run: mvn package
       - name: "Build and publish container image"
         uses: nais/docker-build-push@v0
+        env:
+          TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         id: docker-build-push
         if: (github.event_name == 'push' && github.ref == 'refs/heads/master') || github.event_name == 'workflow_dispatch'
         with:
           team: pensjonsbrev
           image_suffix: pensjon-dokdist
-          salsa: false
+          push_image: true
 
   deploy-q2:
     name: Deploy to q2
@@ -79,22 +80,3 @@ jobs:
           CLUSTER: prod-gcp
           RESOURCE: nais/naiserator-prod.yml
           VAR: image=${{ needs.build.outputs.image }}
-
-  salsa:
-    name: Generate SBOM, attest and sign image
-    needs: build
-    runs-on: ubuntu-latest
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
-    permissions:
-      id-token: "write"
-    steps:
-      - name: NAIS login
-        uses: nais/login@v0
-        id: login
-        with:
-          team: pensjonsbrev
-      - name: Generate SBOM, attest and sign image
-        id: attest-sign
-        uses: nais/attest-sign@v1
-        with:
-          image_ref: ${{ needs.build.outputs.image }}@${{ needs.build.outputs.digest }}

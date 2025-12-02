@@ -5,7 +5,7 @@ import net.logstash.logback.marker.RawJsonAppendingMarker
 import no.nav.pensjon.dokdist.auth.*
 import no.nav.pensjon.dokdist.graphql.*
 import org.slf4j.LoggerFactory
-import org.springframework.boot.restclient.RestTemplateBuilder
+import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.*
 import org.springframework.util.StreamUtils
