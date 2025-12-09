@@ -1,8 +1,8 @@
 package no.nav.pensjon.dokdist.auth
 
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.web.client.MockServerRestTemplateCustomizer
-import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.boot.restclient.RestTemplateBuilder
+import org.springframework.boot.restclient.test.MockServerRestTemplateCustomizer
 import org.springframework.http.*
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess
@@ -36,6 +36,6 @@ class AzureAdOBOApiBindingTest{
 
 private class TestApiClient(accessToken: OnBehalfOfTokenResponse, restTemplateBuilder: RestTemplateBuilder) : AzureAdOBOApiBinding(accessToken, restTemplateBuilder) {
     fun request(url: String) {
-        restTemplate.getForObject<String?>(url)
+        restTemplate.getForObject<String>(url)
     }
 }

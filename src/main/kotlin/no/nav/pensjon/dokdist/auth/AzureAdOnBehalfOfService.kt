@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import net.logstash.logback.marker.RawJsonAppendingMarker
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.http.*
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.stereotype.Component
