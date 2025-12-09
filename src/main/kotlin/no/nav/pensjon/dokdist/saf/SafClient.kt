@@ -1,6 +1,6 @@
 package no.nav.pensjon.dokdist.saf
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import net.logstash.logback.marker.RawJsonAppendingMarker
 import no.nav.pensjon.dokdist.auth.*
 import no.nav.pensjon.dokdist.graphql.*
