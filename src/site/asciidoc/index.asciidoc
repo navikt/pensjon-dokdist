@@ -1,0 +1,11 @@
+= Pensjon-dokdist
+
+== Hva gjør Pensjon-dokdist?
+
+Tjenesten skriver ut alle redigerbare brev via sentral print (SITS).
+
+include::steg.asciidoc[]
+
+include::systemdiagram.asciidoc[]
+
+include::grensesnitt.asciidoc[]
