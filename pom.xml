@@ -158,6 +158,11 @@
 				</configuration>
 				<dependencies>
 					<dependency>
+						<groupId>org.openrewrite</groupId>
+						<artifactId>rewrite-kotlin</artifactId>
+						<version>8.68.1</version>
+					</dependency>
+					<dependency>
 						<groupId>org.openrewrite.recipe</groupId>
 						<artifactId>rewrite-spring</artifactId>
 						<version>6.20.0</version>
