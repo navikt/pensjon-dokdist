@@ -4,9 +4,13 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
+import org.springframework.boot.http.client.HttpRedirects
+import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
+import org.springframework.boot.resttestclient.getForEntity
+import org.springframework.boot.resttestclient.getForObject
+import org.springframework.boot.resttestclient.postForEntity
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.*
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -15,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@AutoConfigureTestRestTemplate
 class WebSecurityConfigTest(
     @param:LocalServerPort private val port: Int,
     @param:Autowired private var restTemplate: TestRestTemplate,
@@ -23,7 +28,7 @@ class WebSecurityConfigTest(
     private val authRedirectUrl = "$baseUrl/oauth2/authorization/azure"
 
     init {
-        restTemplate = restTemplate.withRedirects(ClientHttpRequestFactorySettings.Redirects.DONT_FOLLOW)
+        restTemplate = restTemplate.withRedirects(HttpRedirects.DONT_FOLLOW)
     }
 
     @Test

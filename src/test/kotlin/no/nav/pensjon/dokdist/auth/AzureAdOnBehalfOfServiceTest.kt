@@ -1,16 +1,18 @@
 package no.nav.pensjon.dokdist.auth
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.beans.factory.annotation.*
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
-import org.springframework.http.*
+import org.springframework.boot.restclient.test.autoconfigure.RestClientTest
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.*
+import tools.jackson.databind.json.JsonMapper
 import java.time.Instant
 
 private const val ourClientId = "our-client-id"
@@ -28,7 +30,7 @@ private const val ourEndpoint = "https://loginservice.com/oauth2/token"
 class AzureAdOnBehalfOfServiceTest(
     @Autowired private val adService: AzureAdOnBehalfOfService,
     @Autowired private val mockRestServer: MockRestServiceServer,
-    @Autowired private val objectMapper: ObjectMapper,
+    @Autowired private val objectMapper: JsonMapper,
 ) {
     private val ourToken = OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "my token", Instant.now(), Instant.now().plusSeconds(100))
     private val tokenResponse = OnBehalfOfTokenResponse(

@@ -54,7 +54,7 @@ class ClientConfig {
                 tokenExchangeService.exchange(it.accessToken, listOf(scope))
             }
         } else {
-            throw AuthorizationError("Expected OAuth2AuthenticationToken but was: ${auth::class.qualifiedName}")
+            throw AuthorizationError("Expected OAuth2AuthenticationToken but was: ${auth?.let { it::class.qualifiedName}}")
         }
     }
 }
