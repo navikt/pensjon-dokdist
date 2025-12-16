@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.http.client.HttpRedirects
 import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.resttestclient.getForEntity
 import org.springframework.boot.resttestclient.getForObject
 import org.springframework.boot.resttestclient.postForEntity
@@ -18,6 +19,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@AutoConfigureTestRestTemplate
 class WebSecurityConfigTest(
     @param:LocalServerPort private val port: Int,
     @param:Autowired private var restTemplate: TestRestTemplate,

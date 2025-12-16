@@ -1,6 +1,5 @@
 package no.nav.pensjon.dokdist.brevmetadata
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,6 +8,7 @@ import org.springframework.http.*
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.*
+import tools.jackson.databind.json.JsonMapper
 
 private const val endpoint = "http://brevmetadata.local"
 
@@ -19,7 +19,7 @@ private const val endpoint = "http://brevmetadata.local"
 class BrevmetadataClientTest(
     @Autowired private val brevmetadata: BrevmetadataClient,
     @Autowired private val mockRestServer: MockRestServiceServer,
-    @Autowired private val objectMapper: ObjectMapper,
+    @Autowired private val objectMapper: JsonMapper,
 ) {
     private val brevdata = Brevdata(DokumentkategoriCode.IB)
     private val brevdataJson = objectMapper.writeValueAsString(brevdata)

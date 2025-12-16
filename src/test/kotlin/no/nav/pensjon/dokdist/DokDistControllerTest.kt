@@ -1,6 +1,5 @@
 package no.nav.pensjon.dokdist
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.*
 import no.nav.pensjon.dokdist.brevmetadata.*
@@ -20,6 +19,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import tools.jackson.databind.json.JsonMapper
 
 
 @WebMvcTest(properties = ["spring.main.allow-bean-definition-overriding=true"])
@@ -93,7 +93,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost FERDIG_OG_SENTRALPRINT is successful`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, null))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, null))
         val brevdata = Brevdata(DokumentkategoriCode.B)
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
@@ -111,7 +111,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost for FRITEKST_BREV requested distribusjonstype overrides brevdata`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, Distribusjonstype.ANNET))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, Distribusjonstype.ANNET))
         val brevdata = Brevdata(DokumentkategoriCode.B)
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost.copy(dokumenter = listOf(Journalpost.Dokument(FRITEKST_BREV_KODE)))
@@ -131,7 +131,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost for FRITEKST_BREV requires distribusjonstype`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, null))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, null))
         val brevdata = Brevdata(DokumentkategoriCode.B)
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost.copy(dokumenter = listOf(Journalpost.Dokument(FRITEKST_BREV_KODE)))
@@ -149,7 +149,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost FERDIG_OG_LOKALPRINT is successful`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_LOKAL_PRINT_STATUS, null))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_LOKAL_PRINT_STATUS, null))
         val brevdata = Brevdata(DokumentkategoriCode.B)
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
@@ -170,7 +170,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost annen status responds bad request`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest("hei", null))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest("hei", null))
         val brevdata = Brevdata(DokumentkategoriCode.B)
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
@@ -190,7 +190,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost missing journalfoerendeEnhet responds bad request`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest("FS", null))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest("FS", null))
         val brevdata = Brevdata(DokumentkategoriCode.B)
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost.copy(journalfoerendeEnhet = null)
@@ -206,7 +206,7 @@ class DokDistControllerTest(
 
     @Test
     fun `distribuerJournalpost with missing brevdata responds bad request`() {
-        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest("FS", null))
+        val distribuerRequestJson = JsonMapper().writeValueAsString(DistribuerRequest("FS", null))
 
         every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
         every { brevmetadata.fetchBrevmetadata(brevkode) } returns null

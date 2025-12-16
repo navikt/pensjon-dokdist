@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.resttestclient.getForEntity
 import org.springframework.boot.resttestclient.getForObject
 import org.springframework.boot.test.context.*
@@ -28,6 +29,7 @@ private const val INDEX_JS_CONTENT = "var x = \"\""
     SinglePageApplicationConfigTest.DisableSecurityConfig::class,
     SinglePageApplicationConfigTest.TestController::class,
 ])
+@AutoConfigureTestRestTemplate
 @ActiveProfiles("test")
 class SinglePageApplicationConfigTest(
     @LocalServerPort private val port: Int,
