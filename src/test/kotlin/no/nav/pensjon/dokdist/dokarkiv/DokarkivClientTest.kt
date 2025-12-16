@@ -3,9 +3,10 @@ package no.nav.pensjon.dokdist.dokarkiv
 import no.nav.pensjon.dokdist.auth.OnBehalfOfTokenResponse
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
-import org.springframework.boot.test.web.client.MockServerRestTemplateCustomizer
-import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.boot.restclient.RestTemplateBuilder
+import org.springframework.boot.restclient.test.MockServerRestTemplateCustomizer
 import org.springframework.http.*
+import org.springframework.http.MediaType
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
 import org.springframework.test.web.client.response.MockRestResponseCreators.*
 import org.springframework.web.server.ResponseStatusException

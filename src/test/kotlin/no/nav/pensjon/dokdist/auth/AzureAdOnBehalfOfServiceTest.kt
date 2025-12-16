@@ -5,8 +5,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.springframework.beans.factory.annotation.*
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.boot.restclient.test.autoconfigure.RestClientTest
 import org.springframework.http.*
+import org.springframework.http.MediaType
 import org.springframework.security.oauth2.core.OAuth2AccessToken
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*

@@ -11,8 +11,8 @@ import no.nav.pensjon.dokdist.saf.*
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.context.annotation.*
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

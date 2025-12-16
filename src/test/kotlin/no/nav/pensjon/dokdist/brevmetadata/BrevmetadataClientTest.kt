@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
+import org.springframework.boot.restclient.test.autoconfigure.RestClientTest
 import org.springframework.http.*
 import org.springframework.test.web.client.MockRestServiceServer
 import org.springframework.test.web.client.match.MockRestRequestMatchers.*
