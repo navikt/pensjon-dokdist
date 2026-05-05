@@ -29,8 +29,8 @@
     "webpack-merge": "^6.0.1"
   },
   "dependencies": {
-    "@navikt/ds-css": "^8.10.3",
-    "@navikt/ds-react": "^8.10.3",
+    "@navikt/ds-css": "^8.10.4",
+    "@navikt/ds-react": "^8.10.4",
     "@navikt/fnrvalidator": "^2.2.1",
     "classnames": "^2.5.1",
     "core-js": "^3.49.0",
