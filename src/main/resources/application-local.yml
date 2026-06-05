@@ -22,3 +22,7 @@ distribuer-journalpost:
 
 brevmetadata:
   url: "https://pensjon-brevmetadata-q2.intern.dev.nav.no"
+
+springdoc:
+  api-docs:
+    enabled: true
