@@ -15,7 +15,6 @@ jobs:
       packages: write
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      digest: ${{ steps.docker-build-push.outputs.digest }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -97,4 +96,4 @@ jobs:
         id: attest-sign
         uses: nais/attest-sign@v2
         with:
-          image_ref: ${{ needs.build.outputs.image }}@${{ needs.build.outputs.digest }}
+          image_ref: ${{ needs.build.outputs.image }}
