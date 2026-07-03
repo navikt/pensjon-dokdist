@@ -3,9 +3,12 @@ const { defineConfig, devices } = require('@playwright/test');
 const port = 8092;
 
 module.exports = defineConfig({
-    testDir: './e2e',
+    testDir: '.',
     fullyParallel: true,
-    reporter: 'list',
+    reporter: [
+        ['list'],
+        ['html', { outputFolder: 'e2e-report', open: 'never' }],
+    ],
     use: {
         baseURL: `http://localhost:${port}`,
         trace: 'on-first-retry',
@@ -17,7 +20,7 @@ module.exports = defineConfig({
         },
     ],
     webServer: {
-        command: `npm run build && node e2e/server.js`,
+        command: `npm --prefix .. run build && node server.js`,
         url: `http://localhost:${port}/journalpost/123`,
         env: { PORT: String(port) },
         reuseExistingServer: !process.env.CI,
