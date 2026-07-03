@@ -33,16 +33,16 @@ jobs:
 
       - name: Install e2e test runner and browser
         if: ${{ steps.playwright-cache.outputs.cache-hit != 'true' }}
-        working-directory: frontend
+        working-directory: e2e
         run: npx playwright install --with-deps chromium
 
       - name: Install system deps for cached test runner browser
         if: ${{ steps.playwright-cache.outputs.cache-hit == 'true' }}
-        working-directory: frontend
+        working-directory: e2e
         run: npx playwright install-deps chromium
 
       - name: Run e2e tests
-        working-directory: frontend
+        working-directory: e2e
         run: npx playwright test
 
       - name: Upload e2e artifacts
@@ -50,7 +50,7 @@ jobs:
         if: ${{ failure() }}
         with:
           name: playwright-artifacts
-          path: frontend/test/e2e-report/
+          path: e2e/e2e-report/
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:
