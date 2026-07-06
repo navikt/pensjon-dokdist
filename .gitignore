@@ -35,3 +35,10 @@ node_modules
 src/main/resources/static
 secrets
 .nvmrc
+
+### Playwright ###
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+e2e-report/
