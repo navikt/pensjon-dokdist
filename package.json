@@ -4,20 +4,24 @@
   "description": "Frontend for the pensjon-dokdist app",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack serve --config webpack.dev.js",
-    "build": "webpack --mode production",
+    "dev": "cross-env NODE_ENV=development webpack serve --config webpack.dev.js",
+    "build": "cross-env NODE_ENV=production webpack --mode production",
     "mock-backend": "node mock-backend.js",
     "test:e2e": "playwright test --config=e2e/playwright.config.js"
   },
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0"
+  },
   "devDependencies": {
-    "@babel/core": "^7.29.7",
-    "@babel/preset-env": "^7.29.7",
-    "@babel/preset-react": "^7.29.7",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-env": "^8.0.1",
+    "@babel/preset-react": "^8.0.1",
     "@playwright/test": "^1.61.1",
     "babel-loader": "^10.1.1",
     "babel-plugin-react": "^1.0.0",
+    "cross-env": "^10.1.0",
     "css-loader": "^7.1.4",
     "express": "^5.2.1",
     "graceful-fs": "^4.2.11",
