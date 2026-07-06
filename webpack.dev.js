@@ -22,8 +22,11 @@ module.exports = merge(common, module.exports = {
     },
     devServer: {
         historyApiFallback: true,
-        proxy: {
-            '/api': 'http://localhost:8081',
-        }
+        proxy: [
+            {
+                context: ['/api'],
+                target: 'http://localhost:8081',
+            },
+        ]
     }
 })
