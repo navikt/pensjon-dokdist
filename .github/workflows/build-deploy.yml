@@ -24,6 +24,33 @@ jobs:
           node-version: 22.x
       - run: npm ci
       - run: npm run build
+      - name: Cache test runner browser
+        id: playwright-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles('package-lock.json') }}
+
+      - name: Install e2e test runner and browser
+        if: ${{ steps.playwright-cache.outputs.cache-hit != 'true' }}
+        working-directory: e2e
+        run: npx playwright install --with-deps chromium
+
+      - name: Install system deps for cached test runner browser
+        if: ${{ steps.playwright-cache.outputs.cache-hit == 'true' }}
+        working-directory: e2e
+        run: npx playwright install-deps chromium
+
+      - name: Run e2e tests
+        working-directory: e2e
+        run: npx playwright test
+
+      - name: Upload e2e artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: ${{ failure() }}
+        with:
+          name: playwright-artifacts
+          path: e2e/e2e-report/
       - name: Set up JDK
         uses: actions/setup-java@v5
         with:

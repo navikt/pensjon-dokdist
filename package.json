@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack serve --config webpack.dev.js",
     "build": "cross-env NODE_ENV=production webpack --mode production",
-    "mock-backend": "node mock-backend.js"
+    "mock-backend": "node mock-backend.js",
+    "test:e2e": "playwright test --config=e2e/playwright.config.js"
   },
   "author": "",
   "license": "MIT",
@@ -14,6 +15,7 @@
     "@babel/core": "^8.0.1",
     "@babel/preset-env": "^8.0.1",
     "@babel/preset-react": "^8.0.1",
+    "@playwright/test": "^1.61.1",
     "babel-loader": "^10.1.1",
     "babel-plugin-react": "^1.0.0",
     "cross-env": "^10.1.0",
