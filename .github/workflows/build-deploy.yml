@@ -23,6 +23,8 @@ jobs:
         with:
           node-version: 22.x
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
       - run: npm run build
       - name: Cache test runner browser
         id: playwright-cache
