@@ -1,7 +1,7 @@
 package no.nav.pensjon.dokdist.auth
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import net.logstash.logback.marker.RawJsonAppendingMarker
+import org.apache.logging.log4j.ThreadContext
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.web.client.RestTemplateBuilder
@@ -55,29 +55,34 @@ class AzureAdOnBehalfOfService(
 
     } catch (e: HttpClientErrorException) {
         if (e.statusCode == HttpStatus.NOT_FOUND) {
-            logger.error(
-                RawJsonAppendingMarker("error_response", e.responseBodyAsString),
-                "Got 404 when trying to exchange token using endpoint $endpoint"
-            )
+            withErrorResponse(e.responseBodyAsString) {
+                logger.error("Got 404 when trying to exchange token using endpoint $endpoint")
+            }
             throw OnBehalfOfException("Unable to exchange token, wrong URL", e)
         }  else if (e.statusCode == HttpStatus.BAD_REQUEST) {
-            logger.warn(
-                RawJsonAppendingMarker("error_response", e.responseBodyAsString),
-                "Bad request error for scope=${scope.joinToString(" ")}, typically solvable by refresh, message=${e.message}"
-            )
+            withErrorResponse(e.responseBodyAsString) {
+                logger.warn("Bad request error for scope=${scope.joinToString(" ")}, typically solvable by refresh, message=${e.message}")
+            }
             throw OnBehalfOfException("Unable to exchange token", e)
         } else {
-            logger.error(
-                RawJsonAppendingMarker("error_response", e.responseBodyAsString),
-                "Failed to exchange token for scope=${scope.joinToString(" ")}, got status=${e.statusText}, message=${e.message}"
-            )
+            withErrorResponse(e.responseBodyAsString) {
+                logger.error("Failed to exchange token for scope=${scope.joinToString(" ")}, got status=${e.statusText}, message=${e.message}")
+            }
             throw OnBehalfOfException("Unable to exchange token", e)
         }
     } catch (e: HttpServerErrorException) {
-        logger.error(
-            RawJsonAppendingMarker("error_response", e.responseBodyAsString),
-            "Failed to exchange token, got status=${e.statusText}, message=${e.message}"
-        )
+        withErrorResponse(e.responseBodyAsString) {
+            logger.error("Failed to exchange token, got status=${e.statusText}, message=${e.message}")
+        }
         throw OnBehalfOfException("Unable to exchange token", e)
+    }
+
+    private fun withErrorResponse(errorResponse: String, block: () -> Unit) {
+        ThreadContext.put("error_response", errorResponse)
+        try {
+            block()
+        } finally {
+            ThreadContext.remove("error_response")
+        }
     }
 }
