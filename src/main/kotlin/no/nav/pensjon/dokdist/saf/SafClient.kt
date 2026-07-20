@@ -1,9 +1,9 @@
 package no.nav.pensjon.dokdist.saf
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import net.logstash.logback.marker.RawJsonAppendingMarker
 import no.nav.pensjon.dokdist.auth.*
 import no.nav.pensjon.dokdist.graphql.*
+import org.apache.logging.log4j.ThreadContext
 import org.slf4j.LoggerFactory
 import org.springframework.boot.web.client.RestTemplateBuilder
 import org.springframework.core.io.ClassPathResource
@@ -54,19 +54,15 @@ class SafClient(
             null
         } catch (e: Forbidden) {
             val msg = "Mangler tilgang til journalpost: $journalpostId"
-            logger.info(
-                RawJsonAppendingMarker("error_response", e.responseBodyAsString),
-                msg,
-                e
-            )
+            withErrorResponse(e.responseBodyAsString) {
+                logger.info(msg, e)
+            }
             throw ResponseStatusException(HttpStatus.FORBIDDEN, msg)
         } catch (e: BadRequest) {
             val msg = "Feil i graphql-spørring til saf for journalpost: $journalpostId"
-            logger.error(
-                RawJsonAppendingMarker("error_response", e.responseBodyAsString),
-                msg,
-                e
-            )
+            withErrorResponse(e.responseBodyAsString) {
+                logger.error(msg, e)
+            }
             throw SafException(msg, e)
         } catch (e: RestClientException) {
             val msg = "Kunne ikke hente journalpost for journalpostId $journalpostId: ukjent grunn"
@@ -81,11 +77,9 @@ class SafClient(
             logger.error(msg)
             throw SafException(msg)
         } else if (response.data == null) {
-            logger.error(
-                RawJsonAppendingMarker(
-                    "error_response", objectMapper.writeValueAsString(response.errors)
-                ), "Journalpost GraphQL spørring feilet for: $journalpostId"
-            )
+            withErrorResponse(objectMapper.writeValueAsString(response.errors)) {
+                logger.error("Journalpost GraphQL spørring feilet for: $journalpostId")
+            }
 
             throw SafException("Hent journalpost feilet: $journalpostId")
         } else if (response.data.journalpost == null) {
@@ -93,6 +87,15 @@ class SafClient(
             null
         } else {
             response.data.journalpost
+        }
+    }
+
+    private fun withErrorResponse(errorResponse: String, block: () -> Unit) {
+        ThreadContext.put("error_response", errorResponse)
+        try {
+            block()
+        } finally {
+            ThreadContext.remove("error_response")
         }
     }
 
