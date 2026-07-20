@@ -11,11 +11,12 @@ import no.nav.pensjon.dokdist.saf.*
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.*
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -43,6 +44,7 @@ class DokDistControllerTest(
     private val journalpost = Journalpost("1234", "en-kul-enhet", listOf(Journalpost.Dokument("1234")))
 
     @TestConfiguration
+    @EnableWebSecurity
     @Order(1)
     class DisableSecurityConfig {
         @Bean

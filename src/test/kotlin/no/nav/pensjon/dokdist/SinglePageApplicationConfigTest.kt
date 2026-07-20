@@ -4,12 +4,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.*
-import org.springframework.boot.test.web.client.*
+import org.springframework.boot.resttestclient.TestRestTemplate
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
+import org.springframework.boot.resttestclient.getForEntity
+import org.springframework.boot.resttestclient.getForObject
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.context.annotation.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.bind.annotation.GetMapping
@@ -22,6 +26,7 @@ private const val INDEX_JS_CONTENT = "var x = \"\""
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = ["spring.main.allow-bean-definition-overriding=true"],
 )
+@AutoConfigureTestRestTemplate
 @Import(value = [
     SinglePageApplicationConfigTest.DisableSecurityConfig::class,
     SinglePageApplicationConfigTest.TestController::class,
@@ -34,6 +39,7 @@ class SinglePageApplicationConfigTest(
     private val baseUrl = "http://localhost:$port"
 
     @TestConfiguration
+    @EnableWebSecurity
     class DisableSecurityConfig {
         @Bean
         fun filterChain(http: HttpSecurity): SecurityFilterChain = http.build()
