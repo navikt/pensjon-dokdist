@@ -6,9 +6,9 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.springframework.web.servlet.PageNotFound" level="ERROR" />
+        <Logger name="org.springframework.web.servlet.PageNotFound" level="DEBUG" />
         <Logger name="org.springframework.security" level="DEBUG" />
-        <Root level="INFO">
+        <Root level="DEBUG">
             <AppenderRef ref="stdout_json" />
         </Root>
     </Loggers>
