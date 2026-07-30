@@ -29,11 +29,7 @@ class TrailingSlashHandlerFilter : Filter {
 
         override fun getRequestURI(): String = newPath
 
-        override fun getRequestURL(): StringBuffer {
-            val url = StringBuffer()
-            url.append(scheme).append("://").append(serverName).append(":").append(serverPort)
-                .append(newPath)
-            return url
-        }
+        override fun getRequestURL(): StringBuffer =
+            StringBuffer("$scheme://$serverName:$serverPort$newPath")
     }
 }
