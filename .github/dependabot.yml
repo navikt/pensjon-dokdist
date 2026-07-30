@@ -44,29 +44,9 @@ updates:
     registries:
       - npm-github
     groups:
-      react-router:
+      frontend:
         patterns:
-            - "react-router*"
-      navikt:
-        patterns:
-        - "@navikt/*"
-      babel:
-        patterns:
-          - "@babel/*"
-          - "babel-*"
-      less:
-        patterns:
-          - "less"
-          - "less-*"
-      react:
-        patterns:
-          - "react"
-          - "react-dom"
-      webpack:
-        patterns:
-          - "html-webpack-plugin"
-          - "webpack"
-          - "webpack-*"
+          - "*"
 
   # ==============
   # GITHUB ACTIONS
