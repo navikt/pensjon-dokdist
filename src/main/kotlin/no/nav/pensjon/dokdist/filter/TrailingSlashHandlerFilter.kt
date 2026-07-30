@@ -1,51 +1,39 @@
-package no.nav.pensjon.dokdist.filter;
+package no.nav.pensjon.dokdist.filter
 
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.Filter
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletRequestWrapper
 
-import java.io.IOException;
+class TrailingSlashHandlerFilter : Filter {
 
-public class TrailingSlashHandlerFilter implements Filter {
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        String path = httpRequest.getRequestURI();
+    override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
+        val httpRequest = request as HttpServletRequest
+        val path = httpRequest.requestURI
 
         if (path.endsWith("/")) {
-            String newPath = path.substring(0, path.length() - 1);
-            HttpServletRequest newRequest = new CustomHttpServletRequestWrapper(httpRequest, newPath);
-            chain.doFilter(newRequest, response);
+            val newPath = path.substring(0, path.length - 1)
+            val newRequest = CustomHttpServletRequestWrapper(httpRequest, newPath)
+            chain.doFilter(newRequest, response)
         } else {
-            chain.doFilter(request, response);
+            chain.doFilter(request, response)
         }
     }
 
-    private static class CustomHttpServletRequestWrapper extends HttpServletRequestWrapper {
+    private class CustomHttpServletRequestWrapper(
+        request: HttpServletRequest,
+        private val newPath: String,
+    ) : HttpServletRequestWrapper(request) {
 
-        private final String newPath;
+        override fun getRequestURI(): String = newPath
 
-        public CustomHttpServletRequestWrapper(HttpServletRequest request, String newPath) {
-            super(request);
-            this.newPath = newPath;
-        }
-
-        @Override
-        public String getRequestURI() {
-            return newPath;
-        }
-
-        @Override
-        public StringBuffer getRequestURL() {
-            StringBuffer url = new StringBuffer();
-            url.append(getScheme()).append("://").append(getServerName()).append(":").append(getServerPort())
-                    .append(newPath);
-            return url;
+        override fun getRequestURL(): StringBuffer {
+            val url = StringBuffer()
+            url.append(scheme).append("://").append(serverName).append(":").append(serverPort)
+                .append(newPath)
+            return url
         }
     }
 }
