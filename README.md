@@ -9,11 +9,11 @@ For å kunne kjøre backend lokalt må man først kjøre `/fetch-secrets.sh` for
 
 - `npm ci`
 - `npm run build`
-- `mvn clean install`
+- `./gradlew clean build`
 - Kjør Spring Boot applikasjonen (`PensjonDokdistApplication`) med spring profil `local`
   ```sh
   # Terminal shell command
-  SPRING_PROFILES_ACTIVE=local mvn spring-boot:run
+  SPRING_PROFILES_ACTIVE=local ./gradlew spring-boot:run
   ```
 - Åpne nettleser `http://localhost:8080/journalpost/1`
 
