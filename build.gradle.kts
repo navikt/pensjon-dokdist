@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	kotlin("jvm") version "2.2.10"
-	kotlin("plugin.spring") version "2.2.10"
-	id("org.springframework.boot") version "3.5.16"
-	id("io.spring.dependency-management") version "1.1.7"
+	alias(libs.plugins.kotlin.jvm)
+	alias(libs.plugins.kotlin.plugin.spring)
+	alias(libs.plugins.spring.boot)
+	alias(libs.plugins.spring.dependency.management)
 }
 
 group = "no.nav"
@@ -27,23 +27,21 @@ repositories {
 	mavenCentral()
 }
 
-val springmockkVersion = "4.0.2"
-
 configurations.all {
 	// Bruker spring-boot-starter-log4j2 som logging-implementasjon i stedet.
 	exclude(group = "org.springframework.boot", module = "spring-boot-starter-logging")
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
-	implementation("org.springframework.boot:spring-boot-starter-log4j2")
-	implementation("org.apache.logging.log4j:log4j-layout-template-json")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.14")
+	implementation(libs.spring.boot.starter.web)
+	implementation(libs.spring.boot.starter.oauth2.client)
+	implementation(libs.spring.boot.starter.log4j2)
+	implementation(libs.log4j.layout.template.json)
+	implementation(libs.jackson.module.kotlin)
+	implementation(libs.springdoc.openapi.starter.webmvc.ui)
 
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("com.ninja-squad:springmockk:$springmockkVersion")
+	testImplementation(libs.spring.boot.starter.test)
+	testImplementation(libs.springmockk)
 }
 
 tasks.withType<KotlinCompile> {
