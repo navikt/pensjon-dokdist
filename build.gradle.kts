@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+	application
 	alias(libs.plugins.kotlin.jvm)
 	alias(libs.plugins.kotlin.plugin.spring)
 	alias(libs.plugins.spring.boot)
@@ -54,6 +55,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks {
+	build {
+		dependsOn(installDist)
+	}
 }
 
 tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
