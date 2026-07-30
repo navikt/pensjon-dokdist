@@ -2,7 +2,7 @@
 :imagesdir: images
 Applikasjonsdiagrammet viser hvilke andre systemer systemet snakker med.
 
-image::pensjon-dokdist.png[pensjon-dokdist,png]
+image::images/pensjon-dokdist.png[pensjon-dokdist,png]
 
 NOTE: STS og on-premise servicebruker er erstattet med AzureAD. Spring Security sørger for login-flow
 og utveksler access-token mot on-behalf-of token til SAF, Dokarkiv og DistribuerJournalpost.
