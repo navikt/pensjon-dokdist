@@ -7,13 +7,15 @@ plugins {
 	alias(libs.plugins.spring.dependency.management)
 }
 
+val javaTarget: String by System.getProperties()
+
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
 description = "Løsning for sentral print/dokumentdistribusjon"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(javaTarget)
 	}
 }
 
