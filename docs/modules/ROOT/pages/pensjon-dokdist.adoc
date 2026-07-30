@@ -4,8 +4,8 @@
 
 Tjenesten skriver ut alle redigerbare brev via sentral print (SITS).
 
-include::steg.asciidoc[]
+include::steg.adoc[]
 
-include::systemdiagram.asciidoc[]
+include::systemdiagram.adoc[]
 
-include::grensesnitt.asciidoc[]
+include::grensesnitt.adoc[]
