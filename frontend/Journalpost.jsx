@@ -13,7 +13,6 @@ import {
     ReadMore
 } from "@navikt/ds-react";
 import "@navikt/ds-css";
-import {fetch} from "whatwg-fetch";
 import './Journalpost.css';
 
 

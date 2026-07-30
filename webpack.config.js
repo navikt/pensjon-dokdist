@@ -16,10 +16,6 @@ module.exports = {
                 exclude: /node_modules/,
                 loader: "babel-loader"
             },
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'less-loader']
-            }
         ]
     },
     resolve: {
