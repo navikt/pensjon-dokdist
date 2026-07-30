@@ -120,41 +120,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
-				<groupId>org.asciidoctor</groupId>
-				<artifactId>asciidoctor-maven-plugin</artifactId>
-				<version>3.2.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>process-asciidoc</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<sourceDirectory>src/site/asciidoc/</sourceDirectory>
-					<outputDirectory>target/classes/static/site/</outputDirectory>
-					<preserveDirectories>true</preserveDirectories>
-					<doctype>book</doctype>
-					<backend>html5</backend>
-					<requires>asciidoctor-diagram</requires>
-					<baseDir>src/site/asciidoc</baseDir>
-				</configuration>
-
-				<dependencies>
-					<dependency>
-						<groupId>org.asciidoctor</groupId>
-						<artifactId>asciidoctorj-diagram</artifactId>
-						<version>3.2.1</version>
-					</dependency>
-					<dependency>
-						<groupId>guru.nidi</groupId>
-						<artifactId>graphviz-java</artifactId>
-						<version>0.18.1</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 		</plugins>
 	</build>
 </project>
