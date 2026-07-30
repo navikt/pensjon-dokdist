@@ -40,6 +40,9 @@ updates:
     registries:
       - npm-github
     groups:
+      react-router:
+        patterns:
+            - "react-router*"
       frontend:
         patterns:
         - "*"
