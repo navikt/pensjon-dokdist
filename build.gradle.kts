@@ -8,7 +8,7 @@ plugins {
 	alias(libs.plugins.spring.dependency.management)
 }
 
-val javaTarget: String by System.getProperties()
+val javaTarget: String = providers.systemProperty("javaTarget").get()
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
