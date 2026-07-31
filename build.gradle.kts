@@ -8,11 +8,15 @@ plugins {
 	alias(libs.plugins.spring.dependency.management)
 }
 
-val javaTarget: String = providers.systemProperty("javaTarget").get()
+val javaTarget: Int = providers.systemProperty("javaTarget").get().toInt()
 
 group = "no.nav"
 version = "0.0.1-SNAPSHOT"
 description = "Løsning for sentral print/dokumentdistribusjon"
+
+application {
+	mainClass = "no.nav.pensjon.dokdist.DokDistApplicationKt"
+}
 
 java {
 	toolchain {
