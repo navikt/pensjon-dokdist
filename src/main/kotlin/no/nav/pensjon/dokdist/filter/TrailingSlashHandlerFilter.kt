@@ -13,8 +13,8 @@ class TrailingSlashHandlerFilter : Filter {
         val httpRequest = request as HttpServletRequest
         val path = httpRequest.requestURI
 
-        if (path.endsWith("/")) {
-            val newPath = path.substring(0, path.length - 1)
+        if (path.length > 1 && path.endsWith("/")) {
+            val newPath = path.dropLast(1)
             val newRequest = CustomHttpServletRequestWrapper(httpRequest, newPath)
             chain.doFilter(newRequest, response)
         } else {
