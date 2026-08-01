@@ -58,7 +58,7 @@ jobs:
           name: playwright-artifacts
           path: e2e/e2e-report/
       - name: Set up JDK
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v5.6.0
         with:
           java-version: 21
           distribution: 'temurin'
