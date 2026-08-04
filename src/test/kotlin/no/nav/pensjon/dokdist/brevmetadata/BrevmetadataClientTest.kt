@@ -27,7 +27,7 @@ class BrevmetadataClientTest(
     @Test
     fun `fetches brevdata`() {
         val kode = "crazy-letter"
-        mockRestServer.expect(requestTo("$endpoint/api/brevdata/brevForBrevkode/$kode"))
+        mockRestServer.expect(requestTo("/api/brevdata/brevForBrevkode/$kode"))
             .andExpect(method(HttpMethod.GET))
             .andRespond(withSuccess(brevdataJson, MediaType.APPLICATION_JSON))
 
@@ -37,7 +37,7 @@ class BrevmetadataClientTest(
     @Test
     fun `fetch unknown brevkode returns null`() {
         val kode = "unknown-brevkode"
-        mockRestServer.expect(requestTo("$endpoint/api/brevdata/brevForBrevkode/$kode"))
+        mockRestServer.expect(requestTo("/api/brevdata/brevForBrevkode/$kode"))
             .andRespond(withBadRequest())
 
         assertNull(brevmetadata.fetchBrevmetadata(kode))
@@ -46,7 +46,7 @@ class BrevmetadataClientTest(
     @Test
     fun `fetch handles empty response`() {
         val kode = "crazy-letter"
-        mockRestServer.expect(requestTo("$endpoint/api/brevdata/brevForBrevkode/$kode"))
+        mockRestServer.expect(requestTo("/api/brevdata/brevForBrevkode/$kode"))
             .andRespond(withSuccess("", MediaType.APPLICATION_JSON))
 
         assertNull(brevmetadata.fetchBrevmetadata(kode))
