@@ -1,7 +1,7 @@
 package no.nav.pensjon.dokdist.brevmetadata
 
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException.BadRequest
 import org.springframework.web.client.getForEntity
@@ -17,7 +17,7 @@ class BrevmetadataClient(
     @Value("\${brevmetadata.url}") private val url: String,
     restTemplateBuilder: RestTemplateBuilder,
 ) : BrevmetadataService {
-    private val restTemplate = restTemplateBuilder.rootUri(url).build()
+    private val restTemplate = restTemplateBuilder.baseUri(url).build()
 
     override fun fetchBrevmetadata(brevkode: String): Brevdata? =
         try {

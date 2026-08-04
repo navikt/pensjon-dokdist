@@ -46,8 +46,12 @@ dependencies {
 	implementation(libs.log4j.layout.template.json)
 	implementation(libs.jackson.module.kotlin)
 	implementation(libs.springdoc.openapi.starter.webmvc.ui)
+	implementation(libs.spring.boot.restclient)
 
 	testImplementation(libs.spring.boot.starter.test)
+	testImplementation(libs.spring.boot.restclient.test)
+	testImplementation(libs.spring.boot.resttestclient)
+	testImplementation(libs.spring.boot.webmvc.test)
 	testImplementation(libs.springmockk)
 }
 

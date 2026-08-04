@@ -50,11 +50,11 @@ class ClientConfig {
         val auth = SecurityContextHolder.getContext().authentication
 
         return if (auth is OAuth2AuthenticationToken) {
-            clientService.loadAuthorizedClient<OAuth2AuthorizedClient>(auth.authorizedClientRegistrationId, auth.name).let {
+            clientService.loadAuthorizedClient<OAuth2AuthorizedClient>(auth.authorizedClientRegistrationId, auth.name)?.let {
                 tokenExchangeService.exchange(it.accessToken, listOf(scope))
-            }
+            } ?: throw AuthorizationError("No authorized client found for registration: ${auth.authorizedClientRegistrationId}")
         } else {
-            throw AuthorizationError("Expected OAuth2AuthenticationToken but was: ${auth::class.qualifiedName}")
+            throw AuthorizationError("Expected OAuth2AuthenticationToken but was: ${auth?.let { it::class.qualifiedName }}")
         }
     }
 }
