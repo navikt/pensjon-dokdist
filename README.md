@@ -13,7 +13,7 @@ For å kunne kjøre backend lokalt må man først kjøre `/fetch-secrets.sh` for
 - Kjør Spring Boot applikasjonen (`PensjonDokDistApplication`) med spring profil `local`
   ```sh
   # Terminal shell command
-  SPRING_PROFILES_ACTIVE=local ./gradlew spring-boot:run
+  SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
   ```
 - Åpne nettleser `http://localhost:8080/journalpost/1`
 
