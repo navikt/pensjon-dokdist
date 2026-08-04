@@ -123,6 +123,6 @@ jobs:
           team: pensjonsbrev
       - name: Generate SBOM, attest and sign image
         id: attest-sign
-        uses: nais/attest-sign@v2
+        uses: nais/attest-sign@v2.0.15
         with:
           image_ref: ${{ needs.build.outputs.image }}
