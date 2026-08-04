@@ -5,6 +5,7 @@ import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException.BadRequest
 import org.springframework.web.client.getForEntity
+import org.springframework.web.util.DefaultUriBuilderFactory
 
 interface BrevmetadataService {
     fun fetchBrevmetadata(brevkode: String): Brevdata?
@@ -17,7 +18,9 @@ class BrevmetadataClient(
     @Value("\${brevmetadata.url}") private val url: String,
     restTemplateBuilder: RestTemplateBuilder,
 ) : BrevmetadataService {
-    private val restTemplate = restTemplateBuilder.rootUri(url).build()
+    private val restTemplate = restTemplateBuilder.build().apply {
+        uriTemplateHandler = DefaultUriBuilderFactory(url)
+    }
 
     override fun fetchBrevmetadata(brevkode: String): Brevdata? =
         try {
