@@ -9,9 +9,13 @@ For å kunne kjøre backend lokalt må man først kjøre `/fetch-secrets.sh` for
 
 - `npm ci`
 - `npm run build`
-- `mvn clean install`
-- Kjør Spring Boot applikasjonen med spring profil 'local' `PensjonDokdistApplication`
-- Åpne nettleser `http://localhost:8080`
+- `./gradlew clean build`
+- Kjør Spring Boot applikasjonen (`PensjonDokDistApplication`) med spring profil `local`
+  ```sh
+  # Terminal shell command
+  SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
+  ```
+- Åpne nettleser `http://localhost:8080/journalpost/1`
 
 ### Utvikle frontend lokalt, mot en mock-backend
 

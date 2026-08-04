@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation, useParams} from "react-router";
 import {
     Alert,
     BodyLong,
@@ -13,7 +13,6 @@ import {
     ReadMore
 } from "@navikt/ds-react";
 import "@navikt/ds-css";
-import {fetch} from "whatwg-fetch";
 import './Journalpost.css';
 
 

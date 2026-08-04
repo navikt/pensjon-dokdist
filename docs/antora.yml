@@ -1,0 +1,5 @@
+name: docs
+version: true
+title: Pensjonsbrev
+nav:
+    - modules/ROOT/nav.adoc

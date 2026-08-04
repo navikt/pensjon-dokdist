@@ -10,12 +10,14 @@ updates:
   # ==============
   # KOTLIN BACKEND
   # ==============
-  - package-ecosystem: "maven"
+  - package-ecosystem: "gradle"
     directories:
       - "/"
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     groups:
       backend:
@@ -36,13 +38,15 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - npm-github
     groups:
       frontend:
         patterns:
-        - "*"
+          - "*"
 
   # ==============
   # GITHUB ACTIONS
