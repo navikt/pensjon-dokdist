@@ -12,11 +12,6 @@ on:
       - "docs/**"
       - ".github/workflows/asciidoctor.yaml"
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -24,6 +19,8 @@ concurrency:
 jobs:
   build_site:
     name: "build asciidoc for github pages"
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -51,6 +48,9 @@ jobs:
 
   deploy:
     name: "deploy to github pages"
+    permissions:
+      pages: write
+      id-token: write
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     environment:
       name: github-pages
