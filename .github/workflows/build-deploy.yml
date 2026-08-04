@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Build frontend assets
         uses: actions/setup-node@v7
         with:
@@ -64,6 +66,8 @@ jobs:
           distribution: 'temurin'
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6.2.0
+        with:
+          cache-encryption-key: ${{ secrets.GRADLEKEY }}
       - name: Build with Gradle
         run: ./gradlew build
       - name: "Build and publish container image"
@@ -85,6 +89,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
@@ -102,6 +108,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: prod-gcp
@@ -123,6 +131,6 @@ jobs:
           team: pensjonsbrev
       - name: Generate SBOM, attest and sign image
         id: attest-sign
-        uses: nais/attest-sign@v2.0.15
+        uses: nais/attest-sign@v2
         with:
           image_ref: ${{ needs.build.outputs.image }}
