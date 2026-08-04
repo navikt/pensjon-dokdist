@@ -28,6 +28,7 @@ updates:
           - "org.springframework.boot:spring-boot-starter-parent"
           - "org.springdoc:springdoc-openapi-starter-webmvc-ui"
           - "com.ninja-squad:springmockk"
+          - "io.spring*"
 
   # =============
   # FRONTEND
