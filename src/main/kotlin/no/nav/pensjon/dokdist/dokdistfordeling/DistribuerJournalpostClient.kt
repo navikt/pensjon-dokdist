@@ -63,7 +63,11 @@ class DistribuerJournalpostClient(
             }
         } catch (e: HttpServerErrorException) {
             val msg = "Kunne ikke distribuere journalpost $journalpostId (5xx): ${e.responseBodyAsString}"
-            logger.error(msg, e)
+            if (e.statusCode == HttpStatus.SERVICE_UNAVAILABLE) {
+                logger.warn(msg, e)
+            } else {
+                logger.error(msg, e)
+            }
             throw DokDistException(msg, e)
         } catch (e: RestClientException) {
             val msg = "Kunne ikke distribuere journalpost $journalpostId: ${e.message}"
