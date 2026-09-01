@@ -57,6 +57,10 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    groups:
+      nais:
+        patterns:
+          - "nais/*"
 
   # ==============
   # Docker
