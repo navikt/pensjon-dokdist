@@ -48,6 +48,12 @@ dependencies {
 	implementation(libs.springdoc.openapi.starter.webmvc.ui)
 	implementation(libs.spring.boot.restclient)
 
+	// TODO: Disse tre er midlertidige fram til Spring Boot i nyere versjon enn 4.1.1 inkluderer tomcat > 11.0.24
+	implementation(libs.tomcat.annotations.api)
+	implementation(libs.tomcat.embed.core)
+	implementation(libs.tomcat.embed.el)
+	implementation(libs.tomcat.embed.websocket)
+
 	testImplementation(libs.spring.boot.starter.test)
 	testImplementation(libs.spring.boot.restclient.test)
 	testImplementation(libs.spring.boot.resttestclient)

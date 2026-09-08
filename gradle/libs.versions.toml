@@ -4,6 +4,7 @@ spring-boot = "4.1.1"
 spring-dependency-management = "1.1.7"
 springdoc-openapi = "3.1.0"
 springmockk = "5.0.1"
+tomcat = "11.0.25"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
@@ -18,6 +19,11 @@ spring-boot-resttestclient = { module = "org.springframework.boot:spring-boot-re
 spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-webmvc-test" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 springmockk = { module = "com.ninja-squad:springmockk", version.ref = "springmockk" }
+
+tomcat-annotations-api = { module = "org.apache.tomcat:tomcat-annotations-api", version.ref = "tomcat" }
+tomcat-embed-core = { module = "org.apache.tomcat.embed:tomcat-embed-core", version.ref = "tomcat" }
+tomcat-embed-el = { module = "org.apache.tomcat.embed:tomcat-embed-el", version.ref = "tomcat" }
+tomcat-embed-websocket = { module = "org.apache.tomcat.embed:tomcat-embed-websocket", version.ref = "tomcat" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
