@@ -12,6 +12,8 @@ class TomcatConfig {
     }
 
     companion object {
+        // Vi fikk veldig mange feil i prod med at requesten sendte med flere locales enn tomcat ville ta imot
+        // Dette er en workaround for det. Ikke optimalt, men bedre enn feil.
         const val MAX_LOCALE_COUNT = 500
     }
 }
