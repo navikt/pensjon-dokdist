@@ -1,20 +1,16 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import {StrictMode} from 'react';
-import {BrowserRouter as Router, Route, Routes} from "react-router";
-import Journalpost from "./Journalpost";
+import {lazy, StrictMode, Suspense} from 'react';
+
+const App = lazy(() => import("./App"));
 
 const rootElement = document.getElementById("root");
 const root = createRoot(rootElement);
 
 root.render(
     <StrictMode>
-        <Router>
-            <Routes>
-                <Route path="journalpost">
-                    <Route path=":id" element={<Journalpost/>} />
-                </Route>
-            </Routes>
-        </Router>
+        <Suspense fallback={null}>
+            <App/>
+        </Suspense>
     </StrictMode>,
 );
