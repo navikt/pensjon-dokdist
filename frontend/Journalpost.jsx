@@ -12,7 +12,7 @@ import {
     RadioGroup,
     ReadMore
 } from "@navikt/ds-react";
-import "@navikt/ds-css";
+import "@navikt/ds-css/dist/index.min.css";
 import './Journalpost.css';
 
 

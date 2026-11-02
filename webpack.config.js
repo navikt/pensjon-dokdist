@@ -26,6 +26,13 @@ module.exports = {
         path: path.resolve(__dirname, 'src', 'main', 'resources', 'static'),
         publicPath: '/'
     },
+    optimization: {
+        runtimeChunk: 'single',
+        splitChunks: {
+            chunks: 'all',
+            maxSize: 200000,
+        },
+    },
     plugins: [new HtmlWebpackPlugin({
         title: 'Distribusjon av brevet',
         template: path.resolve(__dirname, 'frontend', 'index.html'),
