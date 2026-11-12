@@ -1,6 +1,9 @@
 package no.nav.pensjon.dokdist.auth
 
+import no.nav.pensjon.dokdist.filter.CALL_ID_HEADER
+import no.nav.pensjon.dokdist.filter.CALL_ID_MDC_KEY
 import org.junit.jupiter.api.Test
+import org.slf4j.MDC
 import org.springframework.boot.restclient.test.MockServerRestTemplateCustomizer
 import org.springframework.boot.restclient.RestTemplateBuilder
 import org.springframework.http.*
@@ -32,6 +35,27 @@ class AzureAdOBOApiBindingTest{
         mockServer.verify()
     }
 
+    @Test
+    fun `restTemplate forwards call id from MDC`() {
+        val url = "http://something.local"
+        mockServer.expect(requestTo(url))
+            .andExpect(header(CALL_ID_HEADER, "call-123"))
+            .andRespond(withSuccess())
+
+        MDC.putCloseable(CALL_ID_MDC_KEY, "call-123").use { apiClient.request(url) }
+        mockServer.verify()
+    }
+
+    @Test
+    fun `restTemplate omits call id header without MDC value`() {
+        val url = "http://something.local"
+        mockServer.expect(requestTo(url))
+            .andExpect(headerDoesNotExist(CALL_ID_HEADER))
+            .andRespond(withSuccess())
+
+        apiClient.request(url)
+        mockServer.verify()
+    }
 }
 
 private class TestApiClient(accessToken: OnBehalfOfTokenResponse, restTemplateBuilder: RestTemplateBuilder) : AzureAdOBOApiBinding(accessToken, restTemplateBuilder) {

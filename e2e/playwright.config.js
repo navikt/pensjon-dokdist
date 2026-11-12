@@ -5,6 +5,8 @@ const port = 8092;
 module.exports = defineConfig({
     testDir: '.',
     fullyParallel: true,
+    forbidOnly: !!process.env.CI,
+    retries: process.env.CI ? 1 : 0,
     reporter: [
         ['list'],
         ['html', { outputFolder: 'e2e-report', open: 'never' }],

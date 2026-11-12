@@ -4,14 +4,19 @@ import {
     Alert,
     BodyLong,
     BodyShort,
+    Box,
     Button,
+    CopyButton,
     Heading,
+    HGrid,
     Label,
     Loader,
     Radio,
     RadioGroup,
-    ReadMore
+    ReadMore,
+    VStack
 } from "@navikt/ds-react";
+import {FilesIcon} from "@navikt/aksel-icons";
 import "@navikt/ds-css/dist/index.min.css";
 import './Journalpost.css';
 
@@ -20,11 +25,48 @@ const STATUS_INITIAL = 'INITIAL';
 const STATUS_READY_FOR_INPUT = 'READY_FOR_INPUT';
 const STATUS_SUBMITTING = 'SUBMITTING';
 const STATUS_SUBMITTED = 'SUBMITTED';
+const STATUS_ALREADY_DISTRIBUTED = 'ALREADY_DISTRIBUTED';
+const STATUS_MOTTAKER_DOED = 'MOTTAKER_DOED';
+const STATUS_DISTRIBUTION_FAILED = 'DISTRIBUTION_FAILED';
+const STATUS_INFO_FAILED = 'INFO_FAILED';
+const CALL_ID_HEADER = 'Nav-Call-Id';
 
-async function distribuerJournalpost({id, status, distribusjonstype}, setStatus, setErrorMessage) {
+function KorrelasjonsId({callId}) {
+    if (!callId) return null;
+    return (
+        <VStack gap="space-4">
+            <BodyShort size="small">
+                Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Porten.
+            </BodyShort>
+            <Box asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">
+                <HGrid align="center" columns="auto max-content" gap="space-8" paddingInline="space-8 space-0" style={{width: 'fit-content', maxWidth: '100%'}}>
+                    <BodyShort truncate size="small" data-testid="korrelasjons-id">{callId}</BodyShort>
+                    <Box asChild borderRadius="4">
+                        <CopyButton
+                            copyText={callId}
+                            data-color="accent"
+                            icon={<FilesIcon aria-hidden/>}
+                            size="small"
+                            text="Kopier ID"
+                            activeText="Kopiert"
+                            style={{margin: 0}}
+                        />
+                    </Box>
+                </HGrid>
+            </Box>
+        </VStack>
+    );
+}
+
+async function distribuerJournalpost({id, status, distribusjonstype}, setStatus, setErrorMessage, setCallId, isRetry = false) {
     console.log('distribuer', id);
     console.log('status', status);
-    setStatus(STATUS_SUBMITTING)
+    const callId = crypto.randomUUID()
+    if (!isRetry) {
+        setStatus(STATUS_SUBMITTING)
+        setErrorMessage(undefined)
+        setCallId(callId)
+    }
 
     // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
     // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
@@ -33,7 +75,8 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
         method: 'POST',
         credentials: 'same-origin',
         headers: {
-            'Content-type': "application/json"
+            'Content-type': "application/json",
+            [CALL_ID_HEADER]: callId,
         },
         redirect: "error",
         body: JSON.stringify({
@@ -42,23 +85,31 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
             distribusjonstype
         })
     }).catch(() => window.location.reload());
+    setCallId(callId)
 
     // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
     if(response.status === 401) {
         await fetch("/logout")
         window.location.reload()
+    } else if (response.status === 409) {
+        setStatus(STATUS_ALREADY_DISTRIBUTED)
+        setErrorMessage(undefined)
+    } else if (response.status === 410) {
+        setStatus(STATUS_MOTTAKER_DOED)
+        setErrorMessage(undefined)
     } else if (response.status !== 200 && response.status !== 204) {
-        setStatus(STATUS_SUBMITTED)
-        const body = await response.json()
-        setErrorMessage("Feil ved distribuering journalpost. Melding: " + body.message)
+        const body = await response.json().catch(() => ({}))
+        setStatus(STATUS_DISTRIBUTION_FAILED)
+        setErrorMessage(body.message || `Ukjent feil (HTTP ${response.status})`)
     } else {
         setStatus(STATUS_SUBMITTED)
         setErrorMessage(undefined)
     }
 }
 
-async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst) {
+async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst, setCallId) {
     console.log('henter journalpostinfo for journalpost', id);
+    const callId = crypto.randomUUID()
 
     // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
     // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
@@ -66,16 +117,21 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
     const response = await fetch(`/api/journalpost/${id}`, {
         method: 'GET',
         credentials: 'same-origin',
+        headers: {
+            [CALL_ID_HEADER]: callId,
+        },
         redirect: "error",
     }).catch(() => window.location.reload());
 
-    const body = await response.json()
+    const body = await response.json().catch(() => ({}))
     // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
     if(response.status === 401) {
         await fetch("/logout")
         window.location.reload()
     } else if (response.status !== 200) {
-        setErrorMessage("Feil ved henting av journalpostinfo. Melding: " + body.message)
+        setCallId(callId)
+        setStatus(STATUS_INFO_FAILED)
+        setErrorMessage(body.message || `Ukjent feil (HTTP ${response.status})`)
     } else {
         setStatus(STATUS_READY_FOR_INPUT)
         setIsFritekst(body.fritekst)
@@ -87,8 +143,10 @@ function Journalpost() {
     const [status, setStatus] = useState(STATUS_INITIAL);
     const [isFritekst, setIsFritekst] = useState(false);
     const [errorMessage, setErrorMessage] = useState(undefined);
+    const [callId, setCallId] = useState(undefined);
+    const [isRetrying, setIsRetrying] = useState(false);
     const [distribusjonstype, setDistribusjonstype] = useState(() => {
-        hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst)
+        hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst, setCallId)
     });
 
 
@@ -98,13 +156,27 @@ function Journalpost() {
 
     const handleSubmit = async () => {
         if (distribusjonstype === undefined && isFritekst) {
+            setCallId(undefined)
             setErrorMessage("Varslingsmetode må fylles inn")
         } else {
             distribuerJournalpost({
                 id,
                 status: journalStatus,
                 distribusjonstype: distribusjonstype
-            }, setStatus, setErrorMessage);
+            }, setStatus, setErrorMessage, setCallId);
+        }
+    };
+
+    const handleRetry = async () => {
+        setIsRetrying(true)
+        try {
+            await distribuerJournalpost({
+                id,
+                status: journalStatus,
+                distribusjonstype: distribusjonstype
+            }, setStatus, setErrorMessage, setCallId, true);
+        } finally {
+            setIsRetrying(false)
         }
     };
 
@@ -169,14 +241,45 @@ function Journalpost() {
                 </div>
             }
 
-            {errorMessage && <Alert variant="error">{errorMessage}</Alert>}
+            {status === STATUS_DISTRIBUTION_FAILED &&
+                <Alert variant="error" size="small" style={{overflowWrap: 'anywhere'}}>
+                    <VStack gap="space-12" align="start">
+                        <VStack gap="space-8">
+                            <Heading size="small" level="2">Brevet er ikke sendt</Heading>
+                            <BodyShort size="small">Det oppstod en feil, og brevet ble ikke sendt. Du kan prøve å sende brevet på nytt.</BodyShort>
+                            <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
+                            <KorrelasjonsId callId={callId}/>
+                        </VStack>
+                        <Button size="small" type="button" data-color="accent" loading={isRetrying} onClick={handleRetry} style={{margin: 0}}>
+                            Prøv å sende igjen
+                        </Button>
+                    </VStack>
+                </Alert>}
+            {status === STATUS_INFO_FAILED &&
+                <Alert variant="error" size="small" style={{overflowWrap: 'anywhere'}}>
+                    <VStack gap="space-8">
+                        <Heading size="small" level="2">Kunne ikke hente journalposten</Heading>
+                        <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
+                        <KorrelasjonsId callId={callId}/>
+                    </VStack>
+                </Alert>}
+            {errorMessage && status !== STATUS_DISTRIBUTION_FAILED && status !== STATUS_INFO_FAILED &&
+                <Alert variant="error" size="small">{errorMessage}</Alert>}
             {isSuccess && <Alert variant="success">Journalpost er nå sendt.</Alert>}
+            {status === STATUS_ALREADY_DISTRIBUTED && <Alert variant="info">Journalposten er allerede distribuert.</Alert>}
+            {status === STATUS_MOTTAKER_DOED &&
+                <Alert variant="warning" size="small">
+                    <VStack gap="space-8">
+                        <Heading size="small" level="2">Brevet er ikke sendt</Heading>
+                        <BodyShort size="small">Mottakeren er død, så brevet kan ikke distribueres.</BodyShort>
+                    </VStack>
+                </Alert>}
             {shuldShowInput &&
                 <Button onClick={handleSubmit}
                         disabled={isSuccess}
                         loading={inProgress}
                         style={{marginTop: '30px'}}>{label}</Button>}
-            {status === STATUS_INITIAL && errorMessage === undefined &&
+            {status === STATUS_INITIAL &&
                 <Loader variant="neutral" size="3xlarge" title="venter..."/>}
         </div>
     );
