@@ -68,42 +68,48 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
         setCallId(callId)
     }
 
-    // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
-    // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
-    // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
-    const response = await fetch(`/api/journalpost/${id}/send`, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-type': "application/json",
-            [CALL_ID_HEADER]: callId,
-        },
-        redirect: "error",
-        body: JSON.stringify({
-            journalpostId: id,
-            status,
-            distribusjonstype
-        })
-    }).catch(() => window.location.reload());
-    setCallId(callId)
+    try {
+        // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
+        // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
+        // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
+        const response = await fetch(`/api/journalpost/${id}/send`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-type': "application/json",
+                [CALL_ID_HEADER]: callId,
+            },
+            redirect: "error",
+            body: JSON.stringify({
+                journalpostId: id,
+                status,
+                distribusjonstype
+            })
+        }).catch(() => window.location.reload());
+        if (!response) return;
+        setCallId(callId)
 
-    // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
-    if(response.status === 401) {
-        await fetch("/logout")
-        window.location.reload()
-    } else if (response.status === 409) {
-        setStatus(STATUS_ALREADY_DISTRIBUTED)
-        setErrorMessage(undefined)
-    } else if (response.status === 410) {
-        setStatus(STATUS_MOTTAKER_DOED)
-        setErrorMessage(undefined)
-    } else if (response.status !== 200 && response.status !== 204) {
-        const body = await response.json().catch(() => ({}))
+        // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
+        if(response.status === 401) {
+            await fetch("/logout")
+            window.location.reload()
+        } else if (response.status === 409) {
+            setStatus(STATUS_ALREADY_DISTRIBUTED)
+            setErrorMessage(undefined)
+        } else if (response.status === 410) {
+            setStatus(STATUS_MOTTAKER_DOED)
+            setErrorMessage(undefined)
+        } else if (response.status !== 200 && response.status !== 204) {
+            const body = await response.json().catch(() => ({}))
+            setStatus(STATUS_DISTRIBUTION_FAILED)
+            setErrorMessage(body.message || `Ukjent feil (HTTP ${response.status})`)
+        } else {
+            setStatus(STATUS_SUBMITTED)
+            setErrorMessage(undefined)
+        }
+    } catch (error) {
         setStatus(STATUS_DISTRIBUTION_FAILED)
-        setErrorMessage(body.message || `Ukjent feil (HTTP ${response.status})`)
-    } else {
-        setStatus(STATUS_SUBMITTED)
-        setErrorMessage(undefined)
+        setErrorMessage(`Ukjent feil (${error.message})`)
     }
 }
 
@@ -111,30 +117,37 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
     console.log('henter journalpostinfo for journalpost', id);
     const callId = crypto.randomUUID()
 
-    // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
-    // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
-    // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
-    const response = await fetch(`/api/journalpost/${id}`, {
-        method: 'GET',
-        credentials: 'same-origin',
-        headers: {
-            [CALL_ID_HEADER]: callId,
-        },
-        redirect: "error",
-    }).catch(() => window.location.reload());
+    try {
+        // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
+        // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
+        // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
+        const response = await fetch(`/api/journalpost/${id}`, {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                [CALL_ID_HEADER]: callId,
+            },
+            redirect: "error",
+        }).catch(() => window.location.reload());
+        if (!response) return;
 
-    const body = await response.json().catch(() => ({}))
-    // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
-    if(response.status === 401) {
-        await fetch("/logout")
-        window.location.reload()
-    } else if (response.status !== 200) {
+        const body = await response.json().catch(() => ({}))
+        // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
+        if(response.status === 401) {
+            await fetch("/logout")
+            window.location.reload()
+        } else if (response.status !== 200) {
+            setCallId(callId)
+            setStatus(STATUS_INFO_FAILED)
+            setErrorMessage(body.message || `Ukjent feil (HTTP ${response.status})`)
+        } else {
+            setStatus(STATUS_READY_FOR_INPUT)
+            setIsFritekst(body.fritekst)
+        }
+    } catch (error) {
         setCallId(callId)
         setStatus(STATUS_INFO_FAILED)
-        setErrorMessage(body.message || `Ukjent feil (HTTP ${response.status})`)
-    } else {
-        setStatus(STATUS_READY_FOR_INPUT)
-        setIsFritekst(body.fritekst)
+        setErrorMessage(`Ukjent feil (${error.message})`)
     }
 }
 
