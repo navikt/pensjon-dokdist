@@ -21,64 +21,81 @@ const STATUS_READY_FOR_INPUT = 'READY_FOR_INPUT';
 const STATUS_SUBMITTING = 'SUBMITTING';
 const STATUS_SUBMITTED = 'SUBMITTED';
 
+async function feilmeldingFra(response) {
+    const body = await response.json().catch(() => undefined);
+    return body?.message ?? `${response.status} ${response.statusText}`;
+}
+
 async function distribuerJournalpost({id, status, distribusjonstype}, setStatus, setErrorMessage) {
     console.log('distribuer', id);
     console.log('status', status);
     setStatus(STATUS_SUBMITTING)
+    const feilprefiks = "Feil ved distribuering journalpost. Melding: ";
 
-    // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
-    // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
-    // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
-    const response = await fetch(`/api/journalpost/${id}/send`, {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-            'Content-type': "application/json"
-        },
-        redirect: "error",
-        body: JSON.stringify({
-            journalpostId: id,
-            status,
-            distribusjonstype
-        })
-    }).catch(() => window.location.reload());
+    try {
+        // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
+        // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
+        // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
+        const response = await fetch(`/api/journalpost/${id}/send`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-type': "application/json"
+            },
+            redirect: "error",
+            body: JSON.stringify({
+                journalpostId: id,
+                status,
+                distribusjonstype
+            })
+        }).catch(() => window.location.reload());
+        if (!response) return;
 
-    // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
-    if(response.status === 401) {
-        await fetch("/logout")
-        window.location.reload()
-    } else if (response.status !== 200 && response.status !== 204) {
+        // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
+        if (response.status === 401) {
+            await fetch("/logout")
+            window.location.reload()
+        } else if (!response.ok) {
+            setStatus(STATUS_SUBMITTED)
+            setErrorMessage(feilprefiks + await feilmeldingFra(response))
+        } else {
+            setStatus(STATUS_SUBMITTED)
+            setErrorMessage(undefined)
+        }
+    } catch (error) {
         setStatus(STATUS_SUBMITTED)
-        const body = await response.json()
-        setErrorMessage("Feil ved distribuering journalpost. Melding: " + body.message)
-    } else {
-        setStatus(STATUS_SUBMITTED)
-        setErrorMessage(undefined)
+        setErrorMessage(feilprefiks + error.message)
     }
 }
 
 async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst) {
     console.log('henter journalpostinfo for journalpost', id);
+    const feilprefiks = "Feil ved henting av journalpostinfo. Melding: ";
 
-    // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
-    // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
-    // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
-    const response = await fetch(`/api/journalpost/${id}`, {
-        method: 'GET',
-        credentials: 'same-origin',
-        redirect: "error",
-    }).catch(() => window.location.reload());
+    try {
+        // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
+        // redirect: "error" fører til at fetch kaster en exception vi kan fange ved 302.
+        // catch(() => window.location.reload()) vil refreshe siden og da vil backend redirecte til login og bruker får logget inn
+        const response = await fetch(`/api/journalpost/${id}`, {
+            method: 'GET',
+            credentials: 'same-origin',
+            redirect: "error",
+        }).catch(() => window.location.reload());
+        if (!response) return;
 
-    const body = await response.json()
-    // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
-    if(response.status === 401) {
-        await fetch("/logout")
-        window.location.reload()
-    } else if (response.status !== 200) {
-        setErrorMessage("Feil ved henting av journalpostinfo. Melding: " + body.message)
-    } else {
-        setStatus(STATUS_READY_FOR_INPUT)
-        setIsFritekst(body.fritekst)
+        // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
+        if (response.status === 401) {
+            await fetch("/logout")
+            window.location.reload()
+        } else if (!response.ok) {
+            setErrorMessage(feilprefiks + await feilmeldingFra(response))
+        } else {
+            const body = await response.json()
+            setStatus(STATUS_READY_FOR_INPUT)
+            setIsFritekst(body.fritekst)
+        }
+    } catch (error) {
+        setErrorMessage(feilprefiks + error.message)
     }
 }
 

@@ -5,6 +5,8 @@ const port = 8092;
 module.exports = defineConfig({
     testDir: '.',
     fullyParallel: true,
+    forbidOnly: !!process.env.CI,
+    retries: process.env.CI ? 2 : 0,
     reporter: [
         ['list'],
         ['html', { outputFolder: 'e2e-report', open: 'never' }],
@@ -12,6 +14,7 @@ module.exports = defineConfig({
     use: {
         baseURL: `http://localhost:${port}`,
         trace: 'on-first-retry',
+        screenshot: 'only-on-failure',
     },
     projects: [
         {
