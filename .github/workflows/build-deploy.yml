@@ -60,7 +60,9 @@ jobs:
         if: ${{ failure() }}
         with:
           name: playwright-artifacts
-          path: e2e/e2e-report/
+          path: |
+            e2e/e2e-report/
+            e2e/test-results/
       - name: Set up JDK
         uses: actions/setup-java@b843ebf9b913146b38da2eaa7aeddf76074ae1ad # v6.1.0
         with:
