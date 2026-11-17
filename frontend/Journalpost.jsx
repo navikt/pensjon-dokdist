@@ -1,7 +1,6 @@
 import React, {useState} from "react";
-import {useLocation, useParams} from "react-router";
+import {useParams, useSearchParams} from "react-router";
 import {
-    Alert,
     BodyLong,
     BodyShort,
     Box,
@@ -11,12 +10,12 @@ import {
     HGrid,
     Label,
     Loader,
+    LocalAlert,
     Radio,
     RadioGroup,
     ReadMore,
     VStack
 } from "@navikt/ds-react";
-import {FilesIcon} from "@navikt/aksel-icons";
 import "@navikt/ds-css/dist/index.min.css";
 import './Journalpost.css';
 
@@ -45,7 +44,6 @@ function KorrelasjonsId({callId}) {
                         <CopyButton
                             copyText={callId}
                             data-color="accent"
-                            icon={<FilesIcon aria-hidden/>}
                             size="small"
                             text="Kopier ID"
                             activeText="Kopiert"
@@ -159,9 +157,8 @@ function Journalpost() {
     });
 
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
-    const journalStatus = queryParams.get('status');
+    const [searchParams] = useSearchParams();
+    const journalStatus = searchParams.get('status');
 
     const handleSubmit = async () => {
         if (distribusjonstype === undefined && isFritekst) {
@@ -191,15 +188,15 @@ function Journalpost() {
 
     const inProgress = status === STATUS_SUBMITTING;
     const label = inProgress ? 'Send brevet...' : 'Send brevet';
-    const shuldShowInput = status === STATUS_READY_FOR_INPUT || inProgress;
-    const showVarslingsmetode = isFritekst && shuldShowInput;
+    const shouldShowInput = status === STATUS_READY_FOR_INPUT || inProgress;
+    const showVarslingsmetode = isFritekst && shouldShowInput;
     const isSuccess = status === STATUS_SUBMITTED && errorMessage === undefined;
     return (
         <div>
-            <Heading size="large">Journalpost med ID: {id}</Heading>
+            <Heading size="large" level="1">Journalpost med ID: {id}</Heading>
             {showVarslingsmetode &&
                 <div>
-                    <Heading size="medium" style={{marginTop: '30px'}}>Du må velge varseltype</Heading>
+                    <Heading size="medium" level="2" style={{marginTop: '30px'}}>Du må velge varseltype</Heading>
                     <BodyLong size="medium" style={{marginTop: '15px'}}>Du har valgt å bruke et fritekstbrev. Da må du
                         alltid velge varseltype før brevet sendes. Når du har klikket på «send brevet», blir det bestemt
                         av en annen tjeneste om brevet skal sendes til bruker digitalt eller på papir.</BodyLong>
@@ -251,39 +248,63 @@ function Journalpost() {
             }
 
             {status === STATUS_DISTRIBUTION_FAILED &&
-                <Alert variant="error" size="small" style={{overflowWrap: 'anywhere'}}>
-                    <VStack gap="space-12" align="start">
+                <LocalAlert status="error" size="small" style={{overflowWrap: 'anywhere'}}>
+                    <LocalAlert.Header>
+                        <LocalAlert.Title as="h2">Brevet er ikke sendt</LocalAlert.Title>
+                    </LocalAlert.Header>
+                    <LocalAlert.Content>
+                        <VStack gap="space-12" align="start">
+                            <VStack gap="space-8">
+                                <BodyShort size="small">Det oppstod en feil, og brevet ble ikke sendt. Du kan prøve å sende brevet på nytt.</BodyShort>
+                                <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
+                                <KorrelasjonsId callId={callId}/>
+                            </VStack>
+                            <Button size="small" type="button" data-color="accent" loading={isRetrying} onClick={handleRetry} style={{margin: 0}}>
+                                Prøv å sende igjen
+                            </Button>
+                        </VStack>
+                    </LocalAlert.Content>
+                </LocalAlert>}
+            {status === STATUS_INFO_FAILED &&
+                <LocalAlert status="error" size="small" style={{overflowWrap: 'anywhere'}}>
+                    <LocalAlert.Header>
+                        <LocalAlert.Title as="h2">Kunne ikke hente journalposten</LocalAlert.Title>
+                    </LocalAlert.Header>
+                    <LocalAlert.Content>
                         <VStack gap="space-8">
-                            <Heading size="small" level="2">Brevet er ikke sendt</Heading>
-                            <BodyShort size="small">Det oppstod en feil, og brevet ble ikke sendt. Du kan prøve å sende brevet på nytt.</BodyShort>
                             <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
                             <KorrelasjonsId callId={callId}/>
                         </VStack>
-                        <Button size="small" type="button" data-color="accent" loading={isRetrying} onClick={handleRetry} style={{margin: 0}}>
-                            Prøv å sende igjen
-                        </Button>
-                    </VStack>
-                </Alert>}
-            {status === STATUS_INFO_FAILED &&
-                <Alert variant="error" size="small" style={{overflowWrap: 'anywhere'}}>
-                    <VStack gap="space-8">
-                        <Heading size="small" level="2">Kunne ikke hente journalposten</Heading>
-                        <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
-                        <KorrelasjonsId callId={callId}/>
-                    </VStack>
-                </Alert>}
+                    </LocalAlert.Content>
+                </LocalAlert>}
             {errorMessage && status !== STATUS_DISTRIBUTION_FAILED && status !== STATUS_INFO_FAILED &&
-                <Alert variant="error" size="small">{errorMessage}</Alert>}
-            {isSuccess && <Alert variant="success">Journalpost er nå sendt.</Alert>}
-            {status === STATUS_ALREADY_DISTRIBUTED && <Alert variant="info">Journalposten er allerede distribuert.</Alert>}
+                <LocalAlert status="error" size="small">
+                    <LocalAlert.Header>
+                        <LocalAlert.Title as="h2">{errorMessage}</LocalAlert.Title>
+                    </LocalAlert.Header>
+                </LocalAlert>}
+            {isSuccess &&
+                <LocalAlert status="success">
+                    <LocalAlert.Header>
+                        <LocalAlert.Title as="h2">Journalpost er nå sendt.</LocalAlert.Title>
+                    </LocalAlert.Header>
+                </LocalAlert>}
+            {status === STATUS_ALREADY_DISTRIBUTED &&
+                <LocalAlert status="announcement">
+                    <LocalAlert.Header>
+                        <LocalAlert.Title as="h2">Journalposten er allerede distribuert.</LocalAlert.Title>
+                    </LocalAlert.Header>
+                </LocalAlert>}
             {status === STATUS_MOTTAKER_DOED &&
-                <Alert variant="warning" size="small">
-                    <VStack gap="space-8">
-                        <Heading size="small" level="2">Brevet er ikke sendt</Heading>
+                <LocalAlert status="warning" size="small">
+                    <LocalAlert.Header>
+                        <LocalAlert.Title as="h2">Brevet er ikke sendt</LocalAlert.Title>
+                    </LocalAlert.Header>
+                    <LocalAlert.Content>
                         <BodyShort size="small">Mottakeren er død, så brevet kan ikke distribueres.</BodyShort>
-                    </VStack>
-                </Alert>}
-            {shuldShowInput &&
+                    </LocalAlert.Content>
+                </LocalAlert>}
+            {shouldShowInput &&
                 <Button onClick={handleSubmit}
                         disabled={isSuccess}
                         loading={inProgress}
