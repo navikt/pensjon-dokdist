@@ -18,11 +18,14 @@ async function expectNotSent(page, feilmelding) {
     await expect(page.getByText(ALREADY_DISTRIBUTED_TEXT)).toHaveCount(0);
 }
 
+let requestIdCounter = 0;
+const requestIdHeader = () => ({ 'X-Request-ID': `request-id-${++requestIdCounter}` });
+
 function mockInfo(page, { status = 200, body = { journalpostId: ID, fritekst: false } } = {}) {
     const calls = [];
     return page.route(INFO_URL, (route) => {
         calls.push(route.request());
-        return route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
+        return route.fulfill({ status, contentType: 'application/json', headers: requestIdHeader(), body: JSON.stringify(body) });
     }).then(() => calls);
 }
 
@@ -35,7 +38,7 @@ function mockSend(page, handler) {
 }
 
 const fulfillJson = (status, body) => (route) =>
-    route.fulfill({ status, contentType: 'application/json', body: body === undefined ? '' : JSON.stringify(body) });
+    route.fulfill({ status, contentType: 'application/json', headers: requestIdHeader(), body: body === undefined ? '' : JSON.stringify(body) });
 
 function countPageLoads(page) {
     const loads = { count: 0 };
@@ -389,16 +392,15 @@ test.describe('Distribusjon av fritekstbrev', () => {
 });
 
 test.describe('Prøv igjen og korrelasjons-ID', () => {
-    const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
     const RETRY_BUTTON = { name: 'Prøv å sende igjen' };
-    const callIdOf = (request) => request.headers()['nav-call-id'];
+    const callIdOf = async (request) => (await request.response()).headers()['x-request-id'];
 
     function sequence(...handlers) {
         let i = 0;
         return (route) => handlers[Math.min(i++, handlers.length - 1)](route);
     }
 
-    test('viser korrelasjons-ID som ble sendt med distribusjonen', async ({ page }) => {
+    test('viser korrelasjons-ID fra backend for distribusjonen', async ({ page }) => {
         await mockInfo(page);
         const sendCalls = await mockSend(page, fulfillJson(500, { message: 'teknisk feil' }));
 
@@ -406,8 +408,8 @@ test.describe('Prøv igjen og korrelasjons-ID', () => {
         await page.getByRole('button', SEND_BUTTON).click();
 
         await expect(page.getByRole('heading', NOT_SENT_HEADING)).toBeVisible();
-        expect(callIdOf(sendCalls[0])).toMatch(UUID);
-        await expect(page.getByTestId('korrelasjons-id')).toHaveText(callIdOf(sendCalls[0]));
+        expect(sendCalls[0].headers()['x-request-id']).toBeUndefined();
+        await expect(page.getByTestId('korrelasjons-id')).toHaveText(await callIdOf(sendCalls[0]));
     });
 
     test('kopierer korrelasjons-ID til utklippstavlen', async ({ page, context }) => {
@@ -420,10 +422,10 @@ test.describe('Prøv igjen og korrelasjons-ID', () => {
         await page.getByRole('button', { name: 'Kopier ID' }).click();
 
         await expect(page.getByRole('button', { name: 'Kopiert' })).toBeVisible();
-        expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(callIdOf(sendCalls[0]));
+        expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(await callIdOf(sendCalls[0]));
     });
 
-    test('prøv igjen sender brevet på nytt med ny korrelasjons-ID og viser suksess', async ({ page }) => {
+    test('prøv igjen sender brevet på nytt og viser suksess', async ({ page }) => {
         await mockInfo(page);
         const sendCalls = await mockSend(page, sequence(
             fulfillJson(500, { message: 'teknisk feil' }),
@@ -440,7 +442,6 @@ test.describe('Prøv igjen og korrelasjons-ID', () => {
         await expect(page.getByRole('button', RETRY_BUTTON)).toHaveCount(0);
         expect(sendCalls).toHaveLength(2);
         expect(sendCalls[1].postDataJSON()).toEqual(sendCalls[0].postDataJSON());
-        expect(callIdOf(sendCalls[1])).not.toBe(callIdOf(sendCalls[0]));
     });
 
     test('beholder feilmeldingen og viser venter på knappen mens prøv igjen pågår', async ({ page }) => {
@@ -481,7 +482,7 @@ test.describe('Prøv igjen og korrelasjons-ID', () => {
         await page.getByRole('button', RETRY_BUTTON).click();
 
         await expectNotSent(page, 'andre feil');
-        await expect(page.getByTestId('korrelasjons-id')).toHaveText(callIdOf(sendCalls[1]));
+        await expect(page.getByTestId('korrelasjons-id')).toHaveText(await callIdOf(sendCalls[1]));
         await expect(page.getByRole('button', RETRY_BUTTON)).toBeEnabled();
     });
 
@@ -523,9 +524,7 @@ test.describe('Prøv igjen og korrelasjons-ID', () => {
 
         await expect(page.getByRole('heading', INFO_FAILED_HEADING)).toBeVisible();
         await expect(page.getByText('Feilmelding: saf nede')).toBeVisible();
-        const callIds = infoCalls.map(callIdOf);
-        expect(callIds.every((id) => UUID.test(id))).toBe(true);
-        await expect(page.getByTestId('korrelasjons-id')).toHaveText(callIds[callIds.length - 1]);
+        await expect(page.getByTestId('korrelasjons-id')).toHaveText(await callIdOf(infoCalls[infoCalls.length - 1]));
     });
 
     test('viser feilmelding når henting av journalpostinfo gir ikke-JSON', async ({ page }) => {
@@ -535,7 +534,7 @@ test.describe('Prøv igjen og korrelasjons-ID', () => {
 
         await expect(page.getByRole('heading', INFO_FAILED_HEADING)).toBeVisible();
         await expect(page.getByText('Feilmelding: Ukjent feil (HTTP 502)')).toBeVisible();
-        await expect(page.getByTestId('korrelasjons-id')).toBeVisible();
+        await expect(page.getByTestId('korrelasjons-id')).toHaveCount(0);
     });
 
     test('viser ikke korrelasjons-ID ved valideringsfeil', async ({ page }) => {

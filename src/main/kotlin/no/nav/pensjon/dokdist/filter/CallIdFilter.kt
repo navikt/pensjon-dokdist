@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.MDC
 import java.util.UUID
 
-const val CALL_ID_HEADER = "Nav-Call-Id"
+const val CALL_ID_HEADER = "X-Request-ID"
 const val CALL_ID_MDC_KEY = "callId"
 
 private val VALID_CALL_ID = Regex("^[A-Za-z0-9-]{1,64}$")

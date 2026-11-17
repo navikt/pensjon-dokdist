@@ -29,7 +29,7 @@ const STATUS_ALREADY_DISTRIBUTED = 'ALREADY_DISTRIBUTED';
 const STATUS_MOTTAKER_DOED = 'MOTTAKER_DOED';
 const STATUS_DISTRIBUTION_FAILED = 'DISTRIBUTION_FAILED';
 const STATUS_INFO_FAILED = 'INFO_FAILED';
-const CALL_ID_HEADER = 'Nav-Call-Id';
+const CALL_ID_HEADER = 'X-Request-ID';
 
 function KorrelasjonsId({callId}) {
     if (!callId) return null;
@@ -61,11 +61,10 @@ function KorrelasjonsId({callId}) {
 async function distribuerJournalpost({id, status, distribusjonstype}, setStatus, setErrorMessage, setCallId, isRetry = false) {
     console.log('distribuer', id);
     console.log('status', status);
-    const callId = crypto.randomUUID()
     if (!isRetry) {
         setStatus(STATUS_SUBMITTING)
         setErrorMessage(undefined)
-        setCallId(callId)
+        setCallId(undefined)
     }
 
     try {
@@ -77,7 +76,6 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
             credentials: 'same-origin',
             headers: {
                 'Content-type': "application/json",
-                [CALL_ID_HEADER]: callId,
             },
             redirect: "error",
             body: JSON.stringify({
@@ -87,7 +85,7 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
             })
         }).catch(() => window.location.reload());
         if (!response) return;
-        setCallId(callId)
+        setCallId(response.headers.get(CALL_ID_HEADER) ?? undefined)
 
         // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
         if(response.status === 401) {
@@ -115,7 +113,7 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
 
 async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst, setCallId) {
     console.log('henter journalpostinfo for journalpost', id);
-    const callId = crypto.randomUUID()
+    let callId
 
     try {
         // Om sesjonen til bruker har gått ut i backend så vil backend svare med 302 redirect til login og fetch vil automatisk følge denne, men login krever interaksjon fra bruker og kan ikke gjøres med XHR-request.
@@ -124,12 +122,10 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
         const response = await fetch(`/api/journalpost/${id}`, {
             method: 'GET',
             credentials: 'same-origin',
-            headers: {
-                [CALL_ID_HEADER]: callId,
-            },
             redirect: "error",
         }).catch(() => window.location.reload());
         if (!response) return;
+        callId = response.headers.get(CALL_ID_HEADER) ?? undefined
 
         const body = await response.json().catch(() => ({}))
         // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
