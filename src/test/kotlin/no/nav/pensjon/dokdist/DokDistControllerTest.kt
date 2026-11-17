@@ -112,6 +112,42 @@ class DokDistControllerTest(
     }
 
     @Test
+    fun `distribuerJournalpost responds conflict when already distribuert`() {
+        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, null))
+        val brevdata = Brevdata(DokumentkategoriCode.B)
+
+        every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
+        every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
+        every { distribuerJournalpost.distribuer(journalpost.journalpostId, brevdata.dokumentkategori.toDistribusjonstype()) }
+            .returns(DistribueringInternalResponse(null, Status.CONFLICT))
+
+        mockMvc.perform(
+            post("/api/journalpost/${journalpost.journalpostId}/send")
+                .content(distribuerRequestJson)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+        ).andExpect(status().isConflict)
+    }
+
+    @Test
+    fun `distribuerJournalpost returns 410 when mottaker is dead`() {
+        val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, null))
+        val brevdata = Brevdata(DokumentkategoriCode.B)
+
+        every { saf.fetchJournal(journalpost.journalpostId) } returns journalpost
+        every { brevmetadata.fetchBrevmetadata(brevkode) } returns brevdata
+        every { distribuerJournalpost.distribuer(journalpost.journalpostId, brevdata.dokumentkategori.toDistribusjonstype()) }
+            .returns(DistribueringInternalResponse(null, Status.MOTTAKER_DOED))
+
+        mockMvc.perform(
+            post("/api/journalpost/${journalpost.journalpostId}/send")
+                .content(distribuerRequestJson)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+        ).andExpect(status().isGone)
+    }
+
+    @Test
     fun `distribuerJournalpost for FRITEKST_BREV requested distribusjonstype overrides brevdata`() {
         val distribuerRequestJson = ObjectMapper().writeValueAsString(DistribuerRequest(FERDIG_OG_KLAR_SENTRAL_PRINT_STATUS, Distribusjonstype.ANNET))
         val brevdata = Brevdata(DokumentkategoriCode.B)

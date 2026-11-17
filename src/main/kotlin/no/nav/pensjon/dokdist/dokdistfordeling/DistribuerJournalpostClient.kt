@@ -10,8 +10,11 @@ import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.client.RestClientException
 import org.springframework.web.client.exchange
+import java.time.Duration
 
 const val BESTILLENDE_FAGSYSTEM = "AT05"
+
+val DEFAULT_DISTRIBUER_BACKOFF: List<Duration> = listOf(Duration.ofMillis(500), Duration.ofSeconds(1), Duration.ofSeconds(2))
 
 data class DistribueringInternalResponse(
     val originalResponse: DistribuerJournalpostResponse?,
@@ -28,9 +31,27 @@ class DistribuerJournalpostClient(
     private val url: String,
     accessToken: OnBehalfOfTokenResponse,
     restTemplateBuilder: RestTemplateBuilder = RestTemplateBuilder(),
+    private val backoff: List<Duration> = DEFAULT_DISTRIBUER_BACKOFF,
 ) : AzureAdOBOApiBinding(accessToken, restTemplateBuilder), DistribuerJournalpostService {
 
     override fun distribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribueringInternalResponse {
+        backoff.forEachIndexed { index, delay ->
+            try {
+                return forsoekDistribuer(journalpostId, distribusjonstype)
+            } catch (e: DokDistException) {
+                logger.warn("Distribusjon av journalpost $journalpostId feilet (forsøk ${index + 1}), prøver igjen om ${delay.toMillis()} ms: ${e.message}", e)
+            }
+            Thread.sleep(delay.toMillis())
+        }
+        try {
+            return forsoekDistribuer(journalpostId, distribusjonstype)
+        } catch (e: DokDistException) {
+            logger.error(e.message, e)
+            throw e
+        }
+    }
+
+    private fun forsoekDistribuer(journalpostId: String, distribusjonstype: Distribusjonstype): DistribueringInternalResponse {
         val response = try {
             restTemplate.exchange<DistribuerJournalpostResponse>(
                 "$url/rest/v1/distribuerjournalpost",
@@ -55,24 +76,12 @@ class DistribuerJournalpostClient(
                     logger.warn("Mottaker av $journalpostId er død, så journalposten kan ikke distribueres.")
                     return DistribueringInternalResponse(null, Status.MOTTAKER_DOED)
                 }
-                else -> {
-                    val msg = "Kunne ikke distribuere journalpost $journalpostId (4xx): ${e.responseBodyAsString}"
-                    logger.error(msg, e)
-                    throw DokDistException(msg, e)
-                }
+                else -> throw DokDistException("Kunne ikke distribuere journalpost $journalpostId (4xx): ${e.responseBodyAsString}", e)
             }
         } catch (e: HttpServerErrorException) {
-            val msg = "Kunne ikke distribuere journalpost $journalpostId (5xx): ${e.responseBodyAsString}"
-            if (e.statusCode == HttpStatus.SERVICE_UNAVAILABLE) {
-                logger.warn(msg, e)
-            } else {
-                logger.error(msg, e)
-            }
-            throw DokDistException(msg, e)
+            throw DokDistException("Kunne ikke distribuere journalpost $journalpostId (5xx): ${e.responseBodyAsString}", e)
         } catch (e: RestClientException) {
-            val msg = "Kunne ikke distribuere journalpost $journalpostId: ${e.message}"
-            logger.error(msg, e)
-            throw DokDistException(msg, e)
+            throw DokDistException("Kunne ikke distribuere journalpost $journalpostId: ${e.message}", e)
         }
 
         return DistribueringInternalResponse(response.body ?: throw DokDistException("Fikk tomt svar fra distribuerjournalpost for journalpost: $journalpostId"), Status.OK)

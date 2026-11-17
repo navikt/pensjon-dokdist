@@ -49,8 +49,8 @@ class DokDistController(
                     logger.info("Journalpost $journalpostId er distribuert med bestillingsId ${response.originalResponse.bestillingsId}")
                     ResponseEntity.ok(response.originalResponse)
                 }
-                Status.CONFLICT -> ResponseEntity.noContent().build()
-                Status.MOTTAKER_DOED -> ResponseEntity.noContent().build()
+                Status.CONFLICT -> ResponseEntity.status(HttpStatus.CONFLICT).build()
+                Status.MOTTAKER_DOED -> ResponseEntity.status(HttpStatus.GONE).build()
                 else -> throw ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Fikk tom bestillingsId fra dokdistfordeling")
             }
         }

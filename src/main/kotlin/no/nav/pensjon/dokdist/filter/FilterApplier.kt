@@ -12,4 +12,10 @@ class FilterApplier {
         FilterRegistrationBean(TrailingSlashHandlerFilter()).apply {
             addUrlPatterns("/*")
         }
+
+    @Bean
+    fun callIdFilter(): FilterRegistrationBean<CallIdFilter> =
+        FilterRegistrationBean(CallIdFilter()).apply {
+            addUrlPatterns("/api/*")
+        }
 }

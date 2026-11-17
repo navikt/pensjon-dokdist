@@ -1,8 +1,7 @@
-server:
-  error:
-    include-message: always # Inkluder exception melding i svar.
 spring:
   web:
+    error:
+      include-message: always # Inkluder exception melding i svar.
     resources:
       add-mappings: false
   mvc:
