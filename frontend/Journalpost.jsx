@@ -8,6 +8,7 @@ import {
     CopyButton,
     Heading,
     HGrid,
+    HStack,
     Label,
     Loader,
     LocalAlert,
@@ -86,7 +87,7 @@ async function distribuerJournalpost({id, status, distribusjonstype}, setStatus,
         setCallId(response.headers.get(CALL_ID_HEADER) ?? undefined)
 
         // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
-        if(response.status === 401) {
+        if (response.status === 401) {
             await fetch("/logout")
             window.location.reload()
         } else if (response.status === 409) {
@@ -127,7 +128,7 @@ async function hentJournalpostInfo(id, setStatus, setErrorMessage, setIsFritekst
 
         const body = await response.json().catch(() => ({}))
         // Om svaret er 401 så betyr det (mest sannsynlig) at accessTokenet i brukerens sesjon er utløpt, vi logger ut og refresher for ny login for å komme oss rundt det.
-        if(response.status === 401) {
+        if (response.status === 401) {
             await fetch("/logout")
             window.location.reload()
         } else if (response.status !== 200) {
@@ -226,18 +227,18 @@ function Journalpost() {
                             </BodyShort>
                             <BodyShort style={{marginTop: '30px'}}>
                                 Du finner mer informasjon om varseltypene i <a
-                                target="_blank"
-                                href="https://navno.sharepoint.com/sites/fag-og-ytelser-fagsystemer/SitePages/Sentral-print-distribusjon-av-Pesys-brev-p%C3%A5-gammel-brevl%C3%B8sning.aspx"
-                            >
-                                dette rutinedokumentet
-                            </a>.
+                                    target="_blank"
+                                    href="https://navno.sharepoint.com/sites/fag-og-ytelser-fagsystemer/SitePages/Sentral-print-distribusjon-av-Pesys-brev-p%C3%A5-gammel-brevl%C3%B8sning.aspx"
+                                >
+                                    dette rutinedokumentet
+                                </a>.
                             </BodyShort>
                         </div>
                     </ReadMore>
                     <RadioGroup onChange={(v) => setDistribusjonstype(v)}
-                                disabled={inProgress}
-                                style={{marginTop: '30px'}}
-                                legend="Velg varseltype:" size="medium">
+                        disabled={inProgress}
+                        style={{marginTop: '30px'}}
+                        legend="Velg varseltype:" size="medium">
                         <Radio value="VEDTAK">Vedtak</Radio>
 
                         <Radio value="VIKTIG">Viktig</Radio>
@@ -246,71 +247,90 @@ function Journalpost() {
                     </RadioGroup>
                 </div>
             }
-
             {status === STATUS_DISTRIBUTION_FAILED &&
-                <LocalAlert status="error" size="small" style={{overflowWrap: 'anywhere'}}>
-                    <LocalAlert.Header>
-                        <LocalAlert.Title as="h2">Brevet er ikke sendt</LocalAlert.Title>
-                    </LocalAlert.Header>
-                    <LocalAlert.Content>
-                        <VStack gap="space-12" align="start">
-                            <VStack gap="space-8">
-                                <BodyShort size="small">Det oppstod en feil, og brevet ble ikke sendt. Du kan prøve å sende brevet på nytt.</BodyShort>
-                                <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
-                                <KorrelasjonsId callId={callId}/>
+                <HStack>
+                    <LocalAlert status="error" size="small" style={{overflowWrap: 'anywhere'}}>
+                        <LocalAlert.Header>
+                            <LocalAlert.Title as="h2">Brevet er ikke sendt</LocalAlert.Title>
+                        </LocalAlert.Header>
+                        <LocalAlert.Content>
+                            <VStack gap="space-12" align="start">
+                                <VStack gap="space-8">
+                                    <BodyShort size="small">Det oppstod en feil, og brevet ble ikke sendt. Du kan prøve å sende brevet på nytt.</BodyShort>
+                                    <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
+                                    <KorrelasjonsId callId={callId} />
+                                </VStack>
+                                <Button size="small" type="button" data-color="accent" loading={isRetrying} onClick={handleRetry} style={{margin: 0}}>
+                                    Prøv å sende igjen
+                                </Button>
                             </VStack>
-                            <Button size="small" type="button" data-color="accent" loading={isRetrying} onClick={handleRetry} style={{margin: 0}}>
-                                Prøv å sende igjen
-                            </Button>
-                        </VStack>
-                    </LocalAlert.Content>
-                </LocalAlert>}
+                        </LocalAlert.Content>
+                    </LocalAlert>
+                </HStack>
+            }
             {status === STATUS_INFO_FAILED &&
-                <LocalAlert status="error" size="small" style={{overflowWrap: 'anywhere'}}>
-                    <LocalAlert.Header>
-                        <LocalAlert.Title as="h2">Kunne ikke hente journalposten</LocalAlert.Title>
-                    </LocalAlert.Header>
-                    <LocalAlert.Content>
-                        <VStack gap="space-8">
-                            <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
-                            <KorrelasjonsId callId={callId}/>
-                        </VStack>
-                    </LocalAlert.Content>
-                </LocalAlert>}
+                <HStack>
+                    <LocalAlert status="error" size="small" style={{overflowWrap: 'anywhere'}}>
+                        <LocalAlert.Header>
+                            <LocalAlert.Title as="h2">Kunne ikke hente journalposten</LocalAlert.Title>
+                        </LocalAlert.Header>
+                        <LocalAlert.Content>
+                            <VStack gap="space-8">
+                                <BodyShort size="small">Feilmelding: {errorMessage}</BodyShort>
+                                <KorrelasjonsId callId={callId} />
+                            </VStack>
+                        </LocalAlert.Content>
+                    </LocalAlert>
+                </HStack>
+            }
             {errorMessage && status !== STATUS_DISTRIBUTION_FAILED && status !== STATUS_INFO_FAILED &&
-                <LocalAlert status="error" size="small">
-                    <LocalAlert.Header>
-                        <LocalAlert.Title as="h2">{errorMessage}</LocalAlert.Title>
-                    </LocalAlert.Header>
-                </LocalAlert>}
+                <HStack>
+                    <LocalAlert status="error" size="small">
+                        <LocalAlert.Header>
+                            <LocalAlert.Title as="h2">{errorMessage}</LocalAlert.Title>
+                        </LocalAlert.Header>
+                    </LocalAlert>
+                </HStack>
+            }
             {isSuccess &&
-                <LocalAlert status="success">
-                    <LocalAlert.Header>
-                        <LocalAlert.Title as="h2">Journalpost er nå sendt.</LocalAlert.Title>
-                    </LocalAlert.Header>
-                </LocalAlert>}
+                <HStack>
+                    <LocalAlert status="success">
+                        <LocalAlert.Header>
+                            <LocalAlert.Title as="h2">Journalpost er nå sendt.</LocalAlert.Title>
+                        </LocalAlert.Header>
+                    </LocalAlert>
+                </HStack>
+            }
             {status === STATUS_ALREADY_DISTRIBUTED &&
-                <LocalAlert status="announcement">
-                    <LocalAlert.Header>
-                        <LocalAlert.Title as="h2">Journalposten er allerede distribuert.</LocalAlert.Title>
-                    </LocalAlert.Header>
-                </LocalAlert>}
+                <HStack>
+                    <LocalAlert status="announcement">
+                        <LocalAlert.Header>
+                            <LocalAlert.Title as="h2">Journalposten er allerede distribuert.</LocalAlert.Title>
+                        </LocalAlert.Header>
+                    </LocalAlert>
+                </HStack>
+            }
             {status === STATUS_MOTTAKER_DOED &&
-                <LocalAlert status="warning" size="small">
-                    <LocalAlert.Header>
-                        <LocalAlert.Title as="h2">Brevet er ikke sendt</LocalAlert.Title>
-                    </LocalAlert.Header>
-                    <LocalAlert.Content>
-                        <BodyShort size="small">Mottakeren er død, så brevet kan ikke distribueres.</BodyShort>
-                    </LocalAlert.Content>
-                </LocalAlert>}
+                <HStack>
+                    <LocalAlert status="warning" size="small">
+                        <LocalAlert.Header>
+                            <LocalAlert.Title as="h2">Brevet er ikke sendt</LocalAlert.Title>
+                        </LocalAlert.Header>
+                        <LocalAlert.Content>
+                            <BodyShort size="small">Mottakeren er død, så brevet kan ikke distribueres.</BodyShort>
+                        </LocalAlert.Content>
+                    </LocalAlert>
+                </HStack>
+            }
             {shouldShowInput &&
                 <Button onClick={handleSubmit}
-                        disabled={isSuccess}
-                        loading={inProgress}
-                        style={{marginTop: '30px'}}>{label}</Button>}
+                    disabled={isSuccess}
+                    loading={inProgress}
+                    style={{ marginTop: '30px' }}>{label}</Button>
+            }
             {status === STATUS_INITIAL &&
-                <Loader variant="neutral" size="3xlarge" title="venter..."/>}
+                <Loader variant="neutral" size="3xlarge" title="venter..." />
+            }
         </div>
     );
 }
